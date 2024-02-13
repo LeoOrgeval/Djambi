@@ -1,6 +1,8 @@
 import pygame
 from constantes import *
-from board import Board
+from Board import Board
+from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
+
 
 # pygame setup
 pygame.init()
@@ -27,147 +29,73 @@ board.display_board()
 # mettre à jour l'affichage
 pygame.display.flip()
 
-green_pieces = ['Chief', 'Assassin', 'Militant',
-                'Diplomate', 'Reporter', 'Militant',
-                'Militant', 'Militant', 'Necromobile']
-# green_locations = [(0, 0), (1, 0), (2, 0),
-#                    (0, 1), (1, 1), (2, 1),
-#                    (0, 2), (1, 2), (2, 2)]
+# Création des instances de chaque type de pion avec différentes couleurs et positions
 
-gChief_x, gChief_y = 0, 0
-gAssassin_x, gAssassin_y = 1, 0
-gMilitant1_x, gMilitant1_y = 2, 0
-gDiplomate_x, gDiplomate_y = 0, 1
-gReporter_x, gReporter_y = 1, 1
-gMilitant2_x, gMilitant2_y = 2, 1
-gMilitant3_x, gMilitant3_y = 0, 2
-gMilitant4_x, gMilitant4_y = 1, 2
-gNecromobile_x, gNecromobile_y = 2, 2
+# Green Team
+green_diplomat = Diplomat('green')
+green_chief = Chief('green')
+green_assassin = Assassin('green')
+green_reporter = Reporter('green')
+green_militant_0 = Militant('green', 0)
+green_militant_1 = Militant('green', 1)
+green_militant_2 = Militant('green', 2)
+green_militant_3 = Militant('green', 3)
+green_necromobile = Necromobile('green')
+green_team = [green_diplomat, green_chief, green_assassin, green_reporter, green_militant_0, green_militant_1,
+              green_militant_2, green_militant_3, green_necromobile]
 
-green_locations = [(gChief_x, gChief_y), (gAssassin_x, gAssassin_y), (gMilitant1_x, gMilitant1_y),
-                    (gDiplomate_x, gDiplomate_y), (gReporter_x, gReporter_y), (gMilitant2_x, gMilitant2_y),
-                    (gMilitant3_x, gMilitant3_y), (gMilitant4_x, gMilitant4_y), (gNecromobile_x, gNecromobile_y)]
+# Yellow Team
+yellow_diplomat = Diplomat('yellow')
+yellow_chief = Chief('yellow')
+yellow_assassin = Assassin('yellow')
+yellow_reporter = Reporter('yellow')
+yellow_militant_0 = Militant('yellow', 0)
+yellow_militant_1 = Militant('yellow', 1)
+yellow_militant_2 = Militant('yellow', 2)
+yellow_militant_3 = Militant('yellow', 3)
+yellow_necromobile = Necromobile('yellow')
+yellow_team = [yellow_diplomat, yellow_chief, yellow_assassin, yellow_reporter, yellow_militant_0, yellow_militant_1,
+               yellow_militant_2, yellow_militant_3, yellow_necromobile]
 
-yellow_pieces = ['Militant', 'Assassin', 'Chief',
-                 'Militant', 'Reporter', 'Diplomate',
-                 'Necromobile', 'Militant', 'Militant']
-# yellow_locations = [(6, 0), (7, 0), (8, 0),
-#                     (6, 1), (7, 1), (8, 1),
-#                     (6, 2), (7, 2), (8, 2)]
+# Red Team
+red_diplomat = Diplomat('red')
+red_chief = Chief('red')
+red_assassin = Assassin('red')
+red_reporter = Reporter('red')
+red_militant_0 = Militant('red', 0)
+red_militant_1 = Militant('red', 1)
+red_militant_2 = Militant('red', 2)
+red_militant_3 = Militant('red', 3)
+red_necromobile = Necromobile('red')
+red_team = [red_diplomat, red_chief, red_assassin, red_reporter, red_militant_0, red_militant_1, red_militant_2,
+            red_militant_3, red_necromobile]
 
-yMilitant1_x, yMilitant1_y = 6, 0
-yAssassin_x, yAssassin_y = 7, 0
-yChief_x, yChief_y = 8, 0
-yMilitant2_x, yMilitant2_y = 6, 1
-yReporter_x, yReporter_y = 7, 1
-yDiplomate_x, yDiplomate_y = 8, 1
-yNecromobile_x, yNecromobile_y = 6, 2
-yMilitant3_x, yMilitant3_y = 7, 2
-yMilitant4_x, yMilitant4_y = 8, 2
+# Blue Team
+blue_diplomat = Diplomat('blue')
+blue_chief = Chief('blue')
+blue_assassin = Assassin('blue')
+blue_reporter = Reporter('blue')
+blue_militant_0 = Militant('blue', 0)
+blue_militant_1 = Militant('blue', 1)
+blue_militant_2 = Militant('blue', 2)
+blue_militant_3 = Militant('blue', 3)
+blue_necromobile = Necromobile('blue')
+blue_team = [blue_diplomat, blue_chief, blue_assassin, blue_reporter, blue_militant_0, blue_militant_1, blue_militant_2,
+             blue_militant_3, blue_necromobile]
 
-yellow_locations = [(yMilitant1_x, yMilitant1_y), (yAssassin_x, yAssassin_y), (yChief_x, yChief_y),
-                    (yMilitant2_x, yMilitant2_y), (yReporter_x, yReporter_y), (yDiplomate_x, yDiplomate_y),
-                    (yNecromobile_x, yNecromobile_y), (yMilitant3_x, yMilitant3_y), (yMilitant4_x, yMilitant4_y)]
+# Show pawns for each team
+for team in [green_team, yellow_team, red_team, blue_team]:
+    for piece in team:
+        pygame.draw.rect(screen, piece.color, (piece.position[0] * SQUARE_SIZE, piece.position[1] * SQUARE_SIZE,
+                                               SQUARE_SIZE, SQUARE_SIZE))
 
+        piece_image = pygame.image.load(piece.image)
+        resized_piece_image = pygame.transform.scale(piece_image, piece.scale)
 
-red_pieces = ['Militant', 'Militant', 'Necromobile',
-              'Diplomate', 'Reporter', 'Militant',
-              'Chief', 'Assassin', 'Militant']
-# red_locations = [(0, 6), (1, 6), (2, 6),
-#                  (0, 7), (1, 7), (2, 7),
-#                  (0, 8), (1, 8), (2, 8)]
+        screen.blit(resized_piece_image,
+                    (piece.position[0] * SQUARE_SIZE + (SQUARE_SIZE - piece.scale[0]) // 2,
+                     piece.position[1] * SQUARE_SIZE + (SQUARE_SIZE - piece.scale[1]) // 2))
 
-rMilitant1_x, rMilitant1_y = 0, 6
-rMilitant2_x, rMilitant2_y = 1, 6
-rNecromobile_x, rNecromobile_y = 2, 6
-rDiplomate_x, rDiplomate_y = 0, 7
-rReporter_x, rReporter_y = 1, 7
-rMilitant3_x, rMilitant3_y = 2, 7
-rChief_x, rChief_y = 0, 8
-rAssassin_x, rAssassin_y = 1, 8
-rMilitant4_x, rMilitant4_y = 2, 8
-
-red_locations = [(rMilitant1_x, rMilitant1_y), (rMilitant2_x, rMilitant2_y), (rNecromobile_x, rNecromobile_y),
-                    (rDiplomate_x, rDiplomate_y), (rReporter_x, rReporter_y), (rMilitant3_x, rMilitant3_y),
-                    (rChief_x, rChief_y), (rAssassin_x, rAssassin_y), (rMilitant4_x, rMilitant4_y)]
-
-
-
-blue_pieces = ['Necromobile', 'Militant', 'Militant',
-               'Militant', 'Reporter', 'Diplomate',
-               'Militant', 'Assassin', 'Chief']
-# blue_locations = [(6, 6), (7, 6), (8, 6),
-#                   (6, 7), (7, 7), (8, 7),
-#                   (6, 8), (7, 8), (8, 8)]
-
-bNecromobile_x, bNecromobile_y = 6, 6
-bMilitant1_x, bMilitant1_y = 7, 6
-bMilitant2_x, bMilitant2_y = 8, 6
-bMilitant3_x, bMilitant3_y = 6, 7
-bReporter_x, bReporter_y = 7, 7
-bDiplomate_x, bDiplomate_y = 8, 7
-bMilitant4_x, bMilitant4_y = 6, 8
-bAssassin_x, bAssassin_y = 7, 8
-bChief_x, bChief_y = 8, 8
-
-blue_locations = [(bNecromobile_x, bNecromobile_y), (bMilitant1_x, bMilitant1_y), (bMilitant2_x, bMilitant2_y),
-                    (bMilitant3_x, bMilitant3_y), (bReporter_x, bReporter_y), (bDiplomate_x, bDiplomate_y),
-                    (bMilitant4_x, bMilitant4_y), (bAssassin_x, bAssassin_y), (bChief_x, bChief_y)]
-
-chief = pygame.image.load('assets/chef-150x150.png')
-chief = pygame.transform.scale(chief, (57, 57))
-assassin = pygame.image.load('assets/assassin-150x150.png')
-assassin = pygame.transform.scale(assassin, (57, 57))
-diplomate = pygame.image.load('assets/diplomate-150x150.png')
-diplomate = pygame.transform.scale(diplomate, (57, 57))
-reporter = pygame.image.load('assets/reporter-150x150.png')
-reporter = pygame.transform.scale(reporter, (57, 57))
-necromobile = pygame.image.load('assets/necromobile-150x150.png')
-necromobile = pygame.transform.scale(necromobile, (57, 57))
-militant = pygame.image.load('assets/militant-150x150.png')
-militant = pygame.transform.scale(militant, (57, 57))
-maze = pygame.image.load('assets/chef-150x150.png')
-maze = pygame.transform.scale(maze, (57, 57))
-
-pieces_image = [chief, assassin, reporter, necromobile, diplomate, militant]
-pieces_list = ['Chief', 'Assassin', 'Reporter', 'Necromobile', 'Diplomate', 'Militant']
-
-# Afficher les pièces
-for i in range(len(green_pieces)):
-    for j in range(len(pieces_list)):
-        if green_pieces[i] == pieces_list[j]:
-            pygame.draw.rect(screen, GREEN, (green_locations[i][0] * SQUARE_SIZE, green_locations[i][1] *
-                                             SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)),
-            screen.blit(pieces_image[j],
-                        (green_locations[i][0] * SQUARE_SIZE + 10, green_locations[i][1] * SQUARE_SIZE + 10)),
-
-for i in range(len(yellow_pieces)):
-    for j in range(len(pieces_list)):
-        if yellow_pieces[i] == pieces_list[j]:
-            pygame.draw.rect(screen, YELLOW, (yellow_locations[i][0] * SQUARE_SIZE, yellow_locations[i][1] *
-                                              SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)),
-            screen.blit(pieces_image[j],
-                        (yellow_locations[i][0] * SQUARE_SIZE + 10, yellow_locations[i][1] * SQUARE_SIZE + 10))
-
-for i in range(len(red_pieces)):
-    for j in range(len(pieces_list)):
-        if red_pieces[i] == pieces_list[j]:
-            pygame.draw.rect(screen, RED, (red_locations[i][0] * SQUARE_SIZE, red_locations[i][1] *
-                                           SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)),
-            screen.blit(pieces_image[j],
-                        (red_locations[i][0] * SQUARE_SIZE + 10, red_locations[i][1] * SQUARE_SIZE + 10))
-
-for i in range(len(blue_pieces)):
-    for j in range(len(pieces_list)):
-        if blue_pieces[i] == pieces_list[j]:
-            pygame.draw.rect(screen, BLUE, (blue_locations[i][0] * SQUARE_SIZE, blue_locations[i][1] *
-                                            SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)),
-            screen.blit(pieces_image[j],
-                        (blue_locations[i][0] * SQUARE_SIZE + 10, blue_locations[i][1] * SQUARE_SIZE + 10))
-
-# Maze piece in the middle board
-pygame.draw.rect(screen, GREY, (4 * SQUARE_SIZE, 4 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-screen.blit(maze, (4 * SQUARE_SIZE + 10, 4 * SQUARE_SIZE + 10))
 
 # Dessiner les lignes de la grille
 for i in range(1, ROWS):

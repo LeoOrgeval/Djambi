@@ -1,6 +1,8 @@
+import constantes
+
 class Pawn:
     def __init__(self, color, position):
-        self.color = color
+        self.color = constantes.color[color.upper()]
         self.position = tuple(position)
         self.is_alive = True
 

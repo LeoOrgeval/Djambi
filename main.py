@@ -20,8 +20,8 @@ running = True
 clock = pygame.time.Clock()
 
 # dessiner un fond blanc entre le plateau (700x700) et un fond noir pour le reste de la fenêtre (1400x700)
-screen.fill(WHITE)
-pygame.draw.rect(screen, BLACK, (WIDTH, 0, WIDTH, HEIGHT))
+screen.fill(color['WHITE'])
+pygame.draw.rect(screen, color['BLACK'], (WIDTH, 0, WIDTH, HEIGHT))
 
 # dessiner le plateau
 board.display_board()

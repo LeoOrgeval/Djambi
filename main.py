@@ -19,9 +19,15 @@ running = True
 
 clock = pygame.time.Clock()
 
-# dessiner un fond blanc entre le plateau (700x700) et un fond noir pour le reste de la fenêtre (1400x700)
-screen.fill(color['WHITE'])
-pygame.draw.rect(screen, color['BLACK'], (WIDTH, 0, WIDTH, HEIGHT))
+# Charger l'image de fond
+# background_image = pygame.image.load('./assets/board.jpg')
+# Redimensionner l'image pour qu'elle couvre la moitié gauche de l'écran
+# background_image = pygame.transform.scale(background_image, (702, 702))
+# Afficher l'image de fond sur la moitié gauche de l'écran
+# screen.blit(background_image, (0, 0))
+
+# Dessiner la partie droite en noir
+pygame.draw.rect(screen, color['BLACK'], (BOARD_WIDTH, 0, BOARD_WIDTH, BOARD_HEIGHT))
 
 # dessiner le plateau
 board.display_board()
@@ -99,8 +105,20 @@ for team in [green_team, yellow_team, red_team, blue_team]:
 
 # Dessiner les lignes de la grille
 for i in range(1, ROWS):
-    pygame.draw.line(screen, (0, 0, 0), (0, i * SQUARE_SIZE), (WIDTH, i * SQUARE_SIZE))
-    pygame.draw.line(screen, (0, 0, 0), (i * SQUARE_SIZE, 0), (i * SQUARE_SIZE, HEIGHT))
+    # Calculer la position ajustée en fonction du pourcentage de recentrage
+    offset_percentage = 0.07
+    adjusted_position_horizontal = int(GRID_WIDTH * offset_percentage)
+    adjusted_position_vertical = int(GRID_HEIGHT * offset_percentage)
+
+    # Ligne horizontale
+    pygame.draw.line(screen, (255, 0, 0), (adjusted_position_horizontal, i * SQUARE_SIZE),
+                     (GRID_WIDTH + adjusted_position_horizontal, i * SQUARE_SIZE))
+
+    # Ligne verticale
+    pygame.draw.line(screen, (255, 0, 0), (i * SQUARE_SIZE + adjusted_position_horizontal, adjusted_position_vertical),
+                     (i * SQUARE_SIZE + adjusted_position_horizontal, GRID_HEIGHT + adjusted_position_vertical))
+
+
 
 # mettre à jour l'affichage
 pygame.display.flip()

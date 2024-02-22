@@ -37,25 +37,43 @@ def draw_pieces(screen, teams):
             draw_piece(screen, piece)
 
 
+def draw_grid_lines(screen):
+    # Padding 5% of screen width
+    padding_percentage = 0.05
+    offset_x = int(SCREEN_WIDTH * padding_percentage)
+    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2  # To center vertically
+
+    # Draw the grid lines
+    for i in range(ROWS + 1):
+        # Horizontal line
+        pygame.draw.line(screen, (255, 0, 0), (offset_x, offset_y + i * SQUARE_SIZE),
+                         (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
+        # Vertical line
+        pygame.draw.line(screen, (255, 0, 0), (offset_x + i * SQUARE_SIZE, offset_y),
+                         (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
+
+
 def draw_piece(screen, piece):
-    # Draw a single piece on the board
+    # Use the same offsets as for the grid lines
+    padding_percentage = 0.05
+    offset_x = int(SCREEN_WIDTH * padding_percentage)
+    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
-    print("Color:", piece.color)
-    print("Position:", piece.position)
+    # Position adjusted with offsets
+    piece_x = offset_x + piece.position[0] * SQUARE_SIZE
+    piece_y = offset_y + piece.position[1] * SQUARE_SIZE
 
-    pygame.draw.rect(screen, piece.color, (piece.position[0] * SQUARE_SIZE, piece.position[1] * SQUARE_SIZE,
-                                           SQUARE_SIZE, SQUARE_SIZE))
+    # Draw the background square for pawn
+    pygame.draw.rect(screen, piece.color, (piece_x, piece_y, SQUARE_SIZE, SQUARE_SIZE))
+
+    # Load and resize pawn image
     piece_image = pygame.image.load(piece.image)
     resized_piece_image = pygame.transform.scale(piece_image, piece.scale)
+
+    # Draw the image of the pawn in the adjusted position
     screen.blit(resized_piece_image,
-                (piece.position[0] * SQUARE_SIZE + (SQUARE_SIZE - piece.scale[0]) // 2,
-                 piece.position[1] * SQUARE_SIZE + (SQUARE_SIZE - piece.scale[1]) // 2))
-
-
-def draw_grid_lines(screen):
-    # Draw the grid lines on the board
-    for i in range(1, ROWS):
-        draw_line(screen, i)
+                (piece_x + (SQUARE_SIZE - piece.scale[0]) // 2,
+                 piece_y + (SQUARE_SIZE - piece.scale[1]) // 2))
 
 
 def draw_line(screen, i):
@@ -85,10 +103,25 @@ def game_loop(screen, board, teams):
 
 def handle_mouse_click(event):
     # Handle mouse click events
+    padding_percentage = 0.05
+    offset_x = int(SCREEN_WIDTH * padding_percentage)
+    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
+
     pos = pygame.mouse.get_pos()
-    row = pos[1] // SQUARE_SIZE
-    col = pos[0] // SQUARE_SIZE
-    print(row, col)
+
+    # Adjust mouse position to account for offsets
+    adjusted_x = pos[0] - offset_x
+    adjusted_y = pos[1] - offset_y
+
+    # Ensure that clicks outside the grid are ignored
+    if adjusted_x < 0 or adjusted_y < 0 or adjusted_x >= GRID_WIDTH or adjusted_y >= GRID_HEIGHT:
+        return
+
+    # Calculate the row and column, taking the offsets into account
+    row = adjusted_y // SQUARE_SIZE
+    col = adjusted_x // SQUARE_SIZE
+    print(col, row)
+
 
 
 def main():

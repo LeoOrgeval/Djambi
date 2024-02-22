@@ -11,7 +11,11 @@ GRID_WIDTH, GRID_HEIGHT = 600, 600
 ROWS, COLS = 9, 9
 
 # Size of a single square on the grid
-SQUARE_SIZE = GRID_WIDTH // ROWS
+SQUARE_SIZE = int((GRID_WIDTH // ROWS) * 0.95)
+
+# Recalculez GRID_WIDTH et GRID_HEIGHT en fonction du nouveau SQUARE_SIZE
+GRID_WIDTH = SQUARE_SIZE * ROWS
+GRID_HEIGHT = SQUARE_SIZE * COLS
 
 # Colors used in the game
 color = {

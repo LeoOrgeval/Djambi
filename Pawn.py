@@ -1,10 +1,14 @@
 import constantes
 
+
 class Pawn:
-    def __init__(self, color, position):
+    def __init__(self, color, position, pawn_type, image_path):
         self.color = constantes.color[color.upper()]
         self.position = tuple(position)
         self.is_alive = True
+        self.type = pawn_type
+        self.image = image_path
+        self.scale = (57, 57)  # Assume all pawns have the same scale for simplicity
 
     def move(self, new_position):
         self.position = tuple(new_position)
@@ -19,11 +23,7 @@ class Assassin(Pawn):
     }
 
     def __init__(self, color):
-        initial_position = Assassin.initial_positions[color]
-        super().__init__(color, initial_position)
-        self.type = 'Assassin'
-        self.image = './assets/assassin-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, Assassin.initial_positions[color], 'Assassin', constantes.ASSASSIN_IMAGE)
 
 
 class Reporter(Pawn):
@@ -35,11 +35,7 @@ class Reporter(Pawn):
     }
 
     def __init__(self, color):
-        initial_position = Reporter.initial_positions[color]
-        super().__init__(color, initial_position)
-        self.type = 'Reporter'
-        self.image = './assets/reporter-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, Reporter.initial_positions[color], 'Reporter', constantes.REPORTER_IMAGE)
 
 
 class Chief(Pawn):
@@ -51,11 +47,7 @@ class Chief(Pawn):
     }
 
     def __init__(self, color):
-        initial_position = Chief.initial_positions[color]
-        super().__init__(color, initial_position)
-        self.type = 'Chief'
-        self.image = './assets/chef-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, Chief.initial_positions[color], 'Chief', constantes.CHIEF_IMAGE)
 
 
 class Militant(Pawn):
@@ -68,10 +60,7 @@ class Militant(Pawn):
 
     def __init__(self, color, index):
         initial_position = Militant.initial_positions[color][index]
-        super().__init__(color, initial_position)
-        self.type = 'Militant'
-        self.image = './assets/militant-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, initial_position, 'Militant', constantes.MILITANT_IMAGE)
 
 
 class Diplomat(Pawn):
@@ -83,11 +72,7 @@ class Diplomat(Pawn):
     }
 
     def __init__(self, color):
-        initial_position = Diplomat.initial_positions[color]
-        super().__init__(color, initial_position)
-        self.type = 'Diplomate'
-        self.image = './assets/diplomate-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, Diplomat.initial_positions[color], 'Diplomat', constantes.DIPLOMAT_IMAGE)
 
 
 class Necromobile(Pawn):
@@ -99,8 +84,4 @@ class Necromobile(Pawn):
     }
 
     def __init__(self, color):
-        initial_position = Necromobile.initial_positions[color]
-        super().__init__(color, initial_position)
-        self.type = 'Necromobile'
-        self.image = './assets/necromobile-150x150.png'
-        self.scale = (57, 57)
+        super().__init__(color, Necromobile.initial_positions[color], 'Necromobile', constantes.NECROMOBILE_IMAGE)

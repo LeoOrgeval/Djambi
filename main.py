@@ -47,6 +47,18 @@ def draw_pieces(screen, teams):
             draw_piece(screen, piece)
 
 
+def draw_possible_moves(screen, piece, offset_x, offset_y):
+    if piece is not None:
+        possible_moves = piece.get_possible_moves()
+        for move in possible_moves:
+            # Use the same offsets as for the grid lines
+            x, y = move
+            square_x = offset_x + x * SQUARE_SIZE
+            square_y = offset_y + y * SQUARE_SIZE
+            # Draw a circle in the center of the square
+            pygame.draw.circle(screen, (255, 255, 0), (square_x + SQUARE_SIZE // 2, square_y + SQUARE_SIZE // 2), 10)
+
+
 def draw_grid_lines(screen):
     # Padding % of screen width
     offset_x = int(SCREEN_WIDTH * PADDING)
@@ -103,6 +115,8 @@ def draw_line(screen, i):
 
 
 def game_loop(screen, board, teams, background_image):
+    global selected_square, selected_pawn
+
     # Main game loop
     running = True
     clock = pygame.time.Clock()
@@ -112,6 +126,21 @@ def game_loop(screen, board, teams, background_image):
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 handle_mouse_click(event, teams, screen, background_image, board)
+
+        # Calculate the offsets for the grid
+        offset_x = int(SCREEN_WIDTH * PADDING)
+        offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
+
+        # Dessinez le carré sélectionné
+        if selected_square is not None:
+            selected_x = offset_x + selected_square[1] * SQUARE_SIZE
+            selected_y = offset_y + selected_square[0] * SQUARE_SIZE
+            pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, SQUARE_SIZE, SQUARE_SIZE))
+
+        draw_pieces(screen, teams)
+        # Draw the possible moves if a pawn is selected
+        if selected_pawn is not None:
+            draw_possible_moves(screen, selected_pawn, offset_x, offset_y)
         pygame.display.flip()
         clock.tick(FPS)
 

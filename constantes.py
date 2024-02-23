@@ -51,7 +51,7 @@ color = {
 }
 
 # Game's FPS
-FPS = 60
+FPS = 20
 
 # Images for the board
 BOARD_BACKGROUND = './assets/board.png'

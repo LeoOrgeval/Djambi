@@ -27,10 +27,22 @@ class Pawn:
         self.position = tuple(new_position)
 
     def can_move(self, new_position):
+        # Check if the new position is outside the board
+        if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
+            return False
         # Check if the new position is a valid move for the pawn
         dx = new_position[0] - self.position[0]
         dy = new_position[1] - self.position[1]
         return dx == 0 or dy == 0 or abs(dx) == abs(dy)
+
+    def get_possible_moves(self):
+        possible_moves = []
+        for dx in range(-constantes.ROWS, constantes.ROWS):
+            for dy in range(-constantes.COLS, constantes.COLS):
+                new_position = (self.position[0] + dx, self.position[1] + dy)
+                if self.can_move(new_position):
+                    possible_moves.append(new_position)
+        return possible_moves
 
 
 class Assassin(Pawn):
@@ -82,6 +94,9 @@ class Militant(Pawn):
         super().__init__(color, initial_position, 'Militant')
 
     def can_move(self, new_position):
+        # Check if the new position is outside the board
+        if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
+            return False
         # Check if the new position is a valid move for the pawn
         dx = new_position[0] - self.position[0]
         dy = new_position[1] - self.position[1]

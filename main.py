@@ -2,6 +2,10 @@ from constantes import *
 from Board import Board
 from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
 
+# Global variables
+# Selected square by the user
+selected_square = None
+
 
 def init_pygame():
     # Initialize pygame and return the screen object
@@ -50,11 +54,17 @@ def draw_grid_lines(screen):
     # Draw the grid lines
     for i in range(ROWS + 1):
         # Horizontal line
-        pygame.draw.line(screen, (255, 0, 0), (offset_x, offset_y + i * SQUARE_SIZE),
+        pygame.draw.line(screen, (150, 155, 155), (offset_x, offset_y + i * SQUARE_SIZE),
                          (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
         # Vertical line
-        pygame.draw.line(screen, (255, 0, 0), (offset_x + i * SQUARE_SIZE, offset_y),
+        pygame.draw.line(screen, (155, 155, 155), (offset_x + i * SQUARE_SIZE, offset_y),
                          (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
+
+    # Draw the selected square if there is one
+    if selected_square is not None:
+        selected_x = offset_x + selected_square[1] * SQUARE_SIZE
+        selected_y = offset_y + selected_square[0] * SQUARE_SIZE
+        pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, SQUARE_SIZE, SQUARE_SIZE))
 
 
 def draw_piece(screen, piece):
@@ -67,7 +77,7 @@ def draw_piece(screen, piece):
     piece_y = offset_y + piece.position[1] * SQUARE_SIZE
 
     # Draw the background square for pawn
-    pygame.draw.rect(screen, piece.color, (piece_x, piece_y, SQUARE_SIZE, SQUARE_SIZE))
+    # pygame.draw.rect(screen, piece.color, (piece_x, piece_y, SQUARE_SIZE, SQUARE_SIZE))
 
     # Load and resize pawn image
     piece_image = pygame.image.load(piece.image)
@@ -90,7 +100,7 @@ def draw_line(screen, i):
                      (i * SQUARE_SIZE + adjusted_position_horizontal, GRID_HEIGHT + adjusted_position_vertical))
 
 
-def game_loop(screen, board, teams):
+def game_loop(screen, board, teams, background_image):
     # Main game loop
     running = True
     clock = pygame.time.Clock()
@@ -100,11 +110,18 @@ def game_loop(screen, board, teams):
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 handle_mouse_click(event)
+                screen.blit(background_image, (0, 0))
+                draw_board(screen, board)
+                draw_grid_lines(screen)
+                draw_pieces(screen, teams)
         pygame.display.flip()
         clock.tick(FPS)
 
 
 def handle_mouse_click(event):
+    # Modify the global variable selected_square
+    global selected_square
+
     # Handle mouse click events
     offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
@@ -124,6 +141,9 @@ def handle_mouse_click(event):
     col = adjusted_x // SQUARE_SIZE
     print(col, row)
 
+    # Update the selected square based on the click event
+    selected_square = (row, col)
+
 
 def main():
     screen, background_image = init_pygame()
@@ -134,7 +154,7 @@ def main():
     draw_pieces(screen, teams)
     draw_grid_lines(screen)
     pygame.display.flip()
-    game_loop(screen, board, teams)
+    game_loop(screen, board, teams, background_image)
 
 
 if __name__ == "__main__":

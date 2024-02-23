@@ -9,7 +9,10 @@ def init_pygame():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     pygame.display.set_caption("Djambi")
-    return screen
+    # Load background image and resize it to fit the first half screen
+    background_image = pygame.image.load(BOARD_BACKGROUND)
+    background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT))
+    return screen, background_image
 
 
 def create_teams():
@@ -39,7 +42,7 @@ def draw_pieces(screen, teams):
 
 def draw_grid_lines(screen):
     # Padding 5% of screen width
-    padding_percentage = 0.05
+    padding_percentage = PADDING
     offset_x = int(SCREEN_WIDTH * padding_percentage)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2  # To center vertically
 
@@ -55,7 +58,7 @@ def draw_grid_lines(screen):
 
 def draw_piece(screen, piece):
     # Use the same offsets as for the grid lines
-    padding_percentage = 0.05
+    padding_percentage = PADDING
     offset_x = int(SCREEN_WIDTH * padding_percentage)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
@@ -103,7 +106,7 @@ def game_loop(screen, board, teams):
 
 def handle_mouse_click(event):
     # Handle mouse click events
-    padding_percentage = 0.05
+    padding_percentage = PADDING
     offset_x = int(SCREEN_WIDTH * padding_percentage)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
@@ -125,9 +128,10 @@ def handle_mouse_click(event):
 
 
 def main():
-    screen = init_pygame()
+    screen, background_image = init_pygame()
     board = Board()
     teams = create_teams()
+    screen.blit(background_image, (0, 0))
     draw_board(screen, board)
     draw_pieces(screen, teams)
     draw_grid_lines(screen)

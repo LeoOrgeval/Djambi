@@ -17,6 +17,9 @@ SQUARE_SIZE = int((GRID_WIDTH // ROWS) * 0.95)
 GRID_WIDTH = SQUARE_SIZE * ROWS
 GRID_HEIGHT = SQUARE_SIZE * COLS
 
+# Padding of screen width for the grid, the board and pawns
+PADDING = 0.053
+
 # Colors used in the game
 color = {
     'RED': (255, 87, 87),
@@ -41,6 +44,6 @@ MILITANT_IMAGE = './assets/militant-150x150.png'
 
 # Images for the board
 BOARD_IMAGE = './assets/board-702x702.png'
-BOARD_BACKGROUND = './assets/board-background-702x702.png'
+BOARD_BACKGROUND = './assets/board.png'
 
 

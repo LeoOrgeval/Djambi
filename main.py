@@ -7,6 +7,7 @@ from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
 def init_pygame():
     # Initialize pygame and return the screen object
     pygame.init()
+
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     pygame.display.set_caption("Djambi")
     # Load background image and resize it to fit the first half screen
@@ -124,7 +125,6 @@ def handle_mouse_click(event):
     row = adjusted_y // SQUARE_SIZE
     col = adjusted_x // SQUARE_SIZE
     print(col, row)
-
 
 
 def main():

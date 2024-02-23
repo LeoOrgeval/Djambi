@@ -1,11 +1,34 @@
-# Screen dimensions
-SCREEN_WIDTH, SCREEN_HEIGHT = 1404, 702
+import pygame
+
+
+def get_screen_size():
+    # Initialize pygame to get display information
+    pygame.init()
+
+    # Get the current display information
+    display_info = pygame.display.Info()
+    user_screen_width = display_info.current_w
+    user_screen_height = display_info.current_h
+
+    # Set the window size to 90% of the user's screen size
+    window_percentage = 0.9
+    window_width = int(user_screen_width * window_percentage)
+    window_height = int(user_screen_height * window_percentage)
+
+    # Quit pygame init to avoid interference with the main game loop init
+    pygame.quit()
+
+    return window_width, window_height
+
+
+# Call the function and set the constants
+SCREEN_WIDTH, SCREEN_HEIGHT = get_screen_size()
 
 # Board dimensions
-BOARD_WIDTH, BOARD_HEIGHT = 702, 702
+BOARD_WIDTH, BOARD_HEIGHT = SCREEN_WIDTH // 2, SCREEN_HEIGHT
 
 # Grid dimensions for the game
-GRID_WIDTH, GRID_HEIGHT = 600, 600
+GRID_WIDTH, GRID_HEIGHT = BOARD_WIDTH * 0.85, BOARD_HEIGHT * 0.85
 
 # Number of rows and columns on the grid
 ROWS, COLS = 9, 9
@@ -31,7 +54,7 @@ color = {
     'WHITE': (255, 255, 255)
 }
 
-# Game's frames per second
+# Game's FPS
 FPS = 60
 
 # Images for the pieces
@@ -43,7 +66,4 @@ CHIEF_IMAGE = './assets/chef-150x150.png'
 MILITANT_IMAGE = './assets/militant-150x150.png'
 
 # Images for the board
-BOARD_IMAGE = './assets/board-702x702.png'
 BOARD_BACKGROUND = './assets/board.png'
-
-

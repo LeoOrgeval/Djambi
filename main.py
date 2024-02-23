@@ -1,4 +1,3 @@
-import pygame
 from constantes import *
 from Board import Board
 from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
@@ -8,7 +7,8 @@ def init_pygame():
     # Initialize pygame and return the screen object
     pygame.init()
 
-    screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+    # Use pygame.NOFRAME to remove the window border and fix bug with display when user ALT+TAB (Black screen)
+    screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT], pygame.NOFRAME)
     pygame.display.set_caption("Djambi")
     # Load background image and resize it to fit the first half screen
     background_image = pygame.image.load(BOARD_BACKGROUND)
@@ -42,10 +42,10 @@ def draw_pieces(screen, teams):
 
 
 def draw_grid_lines(screen):
-    # Padding 5% of screen width
-    padding_percentage = PADDING
-    offset_x = int(SCREEN_WIDTH * padding_percentage)
-    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2  # To center vertically
+    # Padding % of screen width
+    offset_x = int(SCREEN_WIDTH * PADDING)
+    # To center grid vertically
+    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
     # Draw the grid lines
     for i in range(ROWS + 1):
@@ -59,8 +59,7 @@ def draw_grid_lines(screen):
 
 def draw_piece(screen, piece):
     # Use the same offsets as for the grid lines
-    padding_percentage = PADDING
-    offset_x = int(SCREEN_WIDTH * padding_percentage)
+    offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
     # Position adjusted with offsets
@@ -107,8 +106,7 @@ def game_loop(screen, board, teams):
 
 def handle_mouse_click(event):
     # Handle mouse click events
-    padding_percentage = PADDING
-    offset_x = int(SCREEN_WIDTH * padding_percentage)
+    offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
     pos = pygame.mouse.get_pos()

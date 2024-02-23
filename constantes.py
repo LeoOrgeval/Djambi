@@ -1,6 +1,7 @@
 import pygame
 
 
+# Function to get the user's screen size
 def get_screen_size():
     # Initialize pygame to get display information
     pygame.init()
@@ -10,15 +11,10 @@ def get_screen_size():
     user_screen_width = display_info.current_w
     user_screen_height = display_info.current_h
 
-    # Set the window size to 90% of the user's screen size
-    window_percentage = 0.9
-    window_width = int(user_screen_width * window_percentage)
-    window_height = int(user_screen_height * window_percentage)
-
     # Quit pygame init to avoid interference with the main game loop init
     pygame.quit()
 
-    return window_width, window_height
+    return user_screen_width, user_screen_height
 
 
 # Call the function and set the constants
@@ -41,7 +37,7 @@ GRID_WIDTH = SQUARE_SIZE * ROWS
 GRID_HEIGHT = SQUARE_SIZE * COLS
 
 # Padding of screen width for the grid, the board and pawns
-PADDING = 0.053
+PADDING = 0.0511
 
 # Colors used in the game
 color = {

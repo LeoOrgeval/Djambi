@@ -32,7 +32,7 @@ ROWS, COLS = 9, 9
 # Size of a single square on the grid
 SQUARE_SIZE = int((GRID_WIDTH // ROWS) * 0.95)
 
-# Recalculez GRID_WIDTH et GRID_HEIGHT en fonction du nouveau SQUARE_SIZE
+# Total grid dimensions based on the number of rows and columns and the size of a single square
 GRID_WIDTH = SQUARE_SIZE * ROWS
 GRID_HEIGHT = SQUARE_SIZE * COLS
 
@@ -52,14 +52,6 @@ color = {
 
 # Game's FPS
 FPS = 60
-
-# Images for the pieces
-ASSASSIN_IMAGE = './assets/assassin-150x150.png'
-REPORTER_IMAGE = './assets/reporter-150x150.png'
-DIPLOMAT_IMAGE = './assets/diplomate-150x150.png'
-NECROMOBILE_IMAGE = './assets/necromobile-150x150.png'
-CHIEF_IMAGE = './assets/chef-150x150.png'
-MILITANT_IMAGE = './assets/militant-150x150.png'
 
 # Images for the board
 BOARD_BACKGROUND = './assets/board.png'

@@ -5,6 +5,8 @@ from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
 # Global variables
 # Selected square by the user
 selected_square = None
+# Select pawn and stock it
+selected_pawn = None
 
 
 def init_pygame():
@@ -109,41 +111,52 @@ def game_loop(screen, board, teams, background_image):
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                handle_mouse_click(event)
-                screen.blit(background_image, (0, 0))
-                draw_board(screen, board)
-                draw_grid_lines(screen)
-                draw_pieces(screen, teams)
+                handle_mouse_click(event, teams, screen, background_image, board)
         pygame.display.flip()
         clock.tick(FPS)
 
 
-def handle_mouse_click(event):
-    # Modify the global variable selected_square
-    global selected_square
+def handle_mouse_click(event, teams, screen, background_image, board):
+    # Modify the global variable selected_square and selected_pawn
+    global selected_square, selected_pawn
 
     # Handle mouse click events
     offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
-
     pos = pygame.mouse.get_pos()
-
     # Adjust mouse position to account for offsets
     adjusted_x = pos[0] - offset_x
     adjusted_y = pos[1] - offset_y
-
-    # Ensure that clicks outside the grid are ignored
-    if adjusted_x < 0 or adjusted_y < 0 or adjusted_x >= GRID_WIDTH or adjusted_y >= GRID_HEIGHT:
-        return
-
     # Calculate the row and column, taking the offsets into account
     row = adjusted_y // SQUARE_SIZE
     col = adjusted_x // SQUARE_SIZE
     print(col, row)
 
-    # Update the selected square based on the click event
-    selected_square = (row, col)
+    # if a pawn is selected, move it to the new position
+    if selected_pawn:
+        new_position = (col, row)
+        if selected_pawn.can_move(new_position):
+            selected_pawn.move(new_position)
+            selected_square = None
+            selected_pawn = None
+        else:
+            # if the move is not valid, reset the selected pawn and square
+            selected_pawn = None
+            selected_square = None
+    else:
+        # verify if a pawn is present on the selected square
+        for team in teams:
+            for piece in team:
+                if piece.position == (col, row):
+                    selected_pawn = piece
+                    selected_square = (row, col)
+                    break
 
+    screen.blit(background_image, (0, 0))
+    draw_board(screen, board)
+    draw_pieces(screen, teams)
+    draw_grid_lines(screen)
+    pygame.display.flip()
 
 def main():
     screen, background_image = init_pygame()

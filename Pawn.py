@@ -1,29 +1,36 @@
 import constantes
 
 
+def get_image_path(color, pawn_type, is_alive):
+    # Determine the folder to look for the image based on the pawn's state (alive or dead)
+    state_folder = "Alive" if is_alive else "Died"
+    status = "" if is_alive else "_died"
+    return f'./assets/{state_folder}/{pawn_type}_token_{color}{status}.png'
+
+
 class Pawn:
     def __init__(self, color, position, pawn_type):
         self.color = constantes.color[color.upper()]
         self.position = tuple(position)
         self.is_alive = True
         self.type = pawn_type
-        self.image = self.get_image_path(color, pawn_type, self.is_alive)
+        self.image = get_image_path(color, pawn_type, self.is_alive)
         # Scale the image to fit the square size
         self.scale = (100, 100)
-
-    def get_image_path(self, color, pawn_type, is_alive):
-        # Determine the folder to look for the image based on the pawn's state (alive or dead)
-        state_folder = "Alive" if is_alive else "Died"
-        status = "" if is_alive else "_died"
-        return f'./assets/{state_folder}/{pawn_type}_token_{color}{status}.png'
 
     def set_alive(self, alive):
         self.is_alive = alive
         # Update the image path based on the new state of the pawn (alive or dead)
-        self.image = self.get_image_path(self.color, self.type, self.is_alive)
+        self.image = get_image_path(self.color, self.type, self.is_alive)
 
     def move(self, new_position):
         self.position = tuple(new_position)
+
+    def can_move(self, new_position):
+        # Check if the new position is a valid move for the pawn
+        dx = new_position[0] - self.position[0]
+        dy = new_position[1] - self.position[1]
+        return dx == 0 or dy == 0 or abs(dx) == abs(dy)
 
 
 class Assassin(Pawn):
@@ -73,6 +80,12 @@ class Militant(Pawn):
     def __init__(self, color, index):
         initial_position = Militant.initial_positions[color][index]
         super().__init__(color, initial_position, 'Militant')
+
+    def can_move(self, new_position):
+        # Check if the new position is a valid move for the pawn
+        dx = new_position[0] - self.position[0]
+        dy = new_position[1] - self.position[1]
+        return (dx == 0 or dy == 0 or abs(dx) == abs(dy)) and max(abs(dx), abs(dy)) <= 2
 
 
 class Diplomat(Pawn):

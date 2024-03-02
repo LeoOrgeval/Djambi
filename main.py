@@ -114,35 +114,81 @@ def draw_line(screen, i):
                      (i * SQUARE_SIZE + adjusted_position_horizontal, GRID_HEIGHT + adjusted_position_vertical))
 
 
+def draw_pawn_info(screen, pawn, x, y):
+    if pawn is not None:
+        # Font for the information
+        font = pygame.font.Font(None, 50)
+
+        # Calculate the middle point of the screen
+        middle_point = SCREEN_WIDTH // 2 + SCREEN_WIDTH // 4
+
+        # Loading the pawn image
+        pawn_image = pygame.image.load(pawn.image)
+        pawn_image = pygame.transform.scale(pawn_image, (SQUARE_SIZE * 2.2, SQUARE_SIZE * 2.2))
+        image_x = middle_point - (SQUARE_SIZE * 2.2) // 2
+        screen.blit(pawn_image, (image_x, SQUARE_SIZE))
+
+        # Pawn information
+        y_text_start = SQUARE_SIZE * 3.6
+        info_type = font.render(f"Type: {pawn.type}", True, (255, 255, 255))
+        info_status = font.render(f"Status: {'Alive' if pawn.is_alive else 'Died'}", True, (255, 255, 255))
+
+        # Calculate the position of the text
+        text_x = middle_point - info_type.get_width() // 2
+
+        # Display the information on the screen
+        screen.blit(info_type, (text_x, y_text_start))
+        screen.blit(info_status, (text_x, y_text_start + 50))
+
+
 def game_loop(screen, board, teams, background_image):
     global selected_square, selected_pawn
 
     # Main game loop
     running = True
     clock = pygame.time.Clock()
+    needs_redraw = True
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 handle_mouse_click(event, teams, screen, background_image, board)
+                # Redraw the screen after a click
+                redraw_screen(screen, board, teams, background_image)
+                needs_redraw = False
 
-        # Calculate the offsets for the grid
-        offset_x = int(SCREEN_WIDTH * PADDING)
-        offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
+        if needs_redraw:
+            redraw_screen(screen, board, teams, background_image)
+            needs_redraw = False
 
-        # Dessinez le carré sélectionné
-        if selected_square is not None:
-            selected_x = offset_x + selected_square[1] * SQUARE_SIZE
-            selected_y = offset_y + selected_square[0] * SQUARE_SIZE
-            pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, SQUARE_SIZE, SQUARE_SIZE))
-
-        draw_pieces(screen, teams)
-        # Draw the possible moves if a pawn is selected
-        if selected_pawn is not None:
-            draw_possible_moves(screen, selected_pawn, offset_x, offset_y)
-        pygame.display.flip()
         clock.tick(FPS)
+
+
+def redraw_screen(screen, board, teams, background_image):
+    offset_x = int(SCREEN_WIDTH * PADDING)
+    offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
+
+    screen.blit(background_image, (0, 0))
+    draw_board(screen, board)
+    draw_grid_lines(screen)
+
+    if selected_square is not None:
+        selected_x = offset_x + selected_square[1] * SQUARE_SIZE
+        selected_y = offset_y + selected_square[0] * SQUARE_SIZE
+        pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, SQUARE_SIZE, SQUARE_SIZE))
+
+    draw_pieces(screen, teams)
+
+    if selected_pawn is not None:
+        draw_possible_moves(screen, selected_pawn, offset_x, offset_y)
+        draw_pawn_info(screen, selected_pawn, SCREEN_WIDTH // 2 + 20, 20)
+
+    pygame.display.flip()
+
+
+pygame.font.init()
 
 
 def handle_mouse_click(event, teams, screen, background_image, board):
@@ -186,6 +232,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
     draw_pieces(screen, teams)
     draw_grid_lines(screen)
     pygame.display.flip()
+
 
 def main():
     screen, background_image = init_pygame()

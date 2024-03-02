@@ -16,7 +16,7 @@ class Pawn:
         self.type = pawn_type
         self.image = get_image_path(color, pawn_type, self.is_alive)
         # Scale the image to fit the square size
-        self.scale = (100, 100)
+        self.scale = (constantes.SQUARE_SIZE * 0.8, constantes.SQUARE_SIZE * 0.8)
 
     def set_alive(self, alive):
         self.is_alive = alive

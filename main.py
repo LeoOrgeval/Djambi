@@ -1,3 +1,4 @@
+import constantes
 from constantes import *
 from Board import Board
 from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
@@ -47,9 +48,9 @@ def draw_pieces(screen, teams):
             draw_piece(screen, piece)
 
 
-def draw_possible_moves(screen, piece, offset_x, offset_y):
+def draw_possible_moves(screen, piece, offset_x, offset_y, teams):
     if piece is not None:
-        possible_moves = piece.get_possible_moves()
+        possible_moves = piece.get_possible_moves(teams)
         for move in possible_moves:
             # Use the same offsets as for the grid lines
             x, y = move
@@ -60,25 +61,30 @@ def draw_possible_moves(screen, piece, offset_x, offset_y):
 
 
 def draw_grid_lines(screen):
-    # Padding % of screen width
+    # Padding % with respect to the screen width
     offset_x = int(SCREEN_WIDTH * PADDING)
-    # To center grid vertically
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
-    # Draw the grid lines
-    for i in range(ROWS + 1):
-        # Horizontal line
-        pygame.draw.line(screen, (150, 155, 155), (offset_x, offset_y + i * SQUARE_SIZE),
-                         (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
-        # Vertical line
-        pygame.draw.line(screen, (155, 155, 155), (offset_x + i * SQUARE_SIZE, offset_y),
-                         (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
+    # Load and resize the crown image
+    crown_image = pygame.image.load('assets/Crown.png')
+    crown_image = pygame.transform.scale(crown_image, (SQUARE_SIZE, SQUARE_SIZE))
 
-    # Draw the selected square if there is one
-    if selected_square is not None:
-        selected_x = offset_x + selected_square[1] * SQUARE_SIZE
-        selected_y = offset_y + selected_square[0] * SQUARE_SIZE
-        pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, SQUARE_SIZE, SQUARE_SIZE))
+    # Draw labyrinth square
+    for row in range(ROWS):
+        for col in range(COLS):
+            # Calculate the position of the square
+            square_x = offset_x + col * SQUARE_SIZE
+            square_y = offset_y + row * SQUARE_SIZE
+
+            # Check if the current square is the labyrinth position
+            if (row, col) == constantes.LABYRINTH_POSITION:
+                # draw a crown on the labyrinth square
+                screen.blit(crown_image, (square_x, square_y))
+
+    # draw the grid lines
+    for i in range(ROWS + 1):
+        pygame.draw.line(screen, (155, 155, 155), (offset_x, offset_y + i * SQUARE_SIZE), (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
+        pygame.draw.line(screen, (155, 155, 155), (offset_x + i * SQUARE_SIZE, offset_y), (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
 
 
 def draw_piece(screen, piece):
@@ -182,7 +188,7 @@ def redraw_screen(screen, board, teams, background_image):
     draw_pieces(screen, teams)
 
     if selected_pawn is not None:
-        draw_possible_moves(screen, selected_pawn, offset_x, offset_y)
+        draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
         draw_pawn_info(screen, selected_pawn, SCREEN_WIDTH // 2 + 20, 20)
 
     pygame.display.flip()
@@ -210,8 +216,8 @@ def handle_mouse_click(event, teams, screen, background_image, board):
     # if a pawn is selected, move it to the new position
     if selected_pawn:
         new_position = (col, row)
-        if selected_pawn.can_move(new_position):
-            selected_pawn.move(new_position)
+        if selected_pawn.can_move(new_position, teams):
+            selected_pawn.move(new_position, teams)
             selected_square = None
             selected_pawn = None
         else:

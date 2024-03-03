@@ -17,6 +17,9 @@ def get_screen_size():
     return user_screen_width, user_screen_height
 
 
+# Labirynth position
+LABYRINTH_POSITION = (4, 4)
+
 # Call the function and set the constants
 SCREEN_WIDTH, SCREEN_HEIGHT = get_screen_size()
 
@@ -48,6 +51,14 @@ color = {
     'GREY': (203, 203, 203),
     'BLACK': (0, 0, 0),
     'WHITE': (255, 255, 255)
+}
+
+# Colors for the pawns status
+COLOR_NAMES = {
+    (255, 87, 87): 'red',
+    (87, 154, 255): 'blue',
+    (161, 255, 87): 'green',
+    (255, 228, 87): 'yellow',
 }
 
 # Game's FPS

@@ -1,3 +1,5 @@
+import random
+
 import constantes
 
 
@@ -56,6 +58,28 @@ class Pawn:
                     possible_moves.append(new_position)
         return possible_moves
 
+    def find_enemy_pawn(self, position, teams):
+        """Find ennemy pawn on select position."""
+        for team in teams:
+            for pawn in team:
+                if pawn.position == position and pawn.is_alive and pawn.color != self.color:
+                    return pawn
+        return None
+
+    def get_adjacent_position(self, direction):
+        """Get adjacent position."""
+        dx, dy = 0, 0
+        if direction == "up":
+            dy = -1
+        elif direction == "down":
+            dy = 1
+        elif direction == "left":
+            dx = -1
+        elif direction == "right":
+            dx = 1
+        return self.position[0] + dy, self.position[1] + dx
+
+
 
 class Assassin(Pawn):
     initial_positions = {
@@ -69,17 +93,17 @@ class Assassin(Pawn):
         super().__init__(color, Assassin.initial_positions[color], 'Assassin')
 
     def move(self, new_position, teams=None):
-        """Déplacer l'Assassin et potentiellement tuer une pièce ennemie."""
-        # Rechercher si un pion ennemi est présent sur la nouvelle position
+        """Move Assassin and possibly kill other pawn."""
+        # Find pawn on the new position
         enemy_pawn = self.find_enemy_pawn(new_position, teams)
         if enemy_pawn:
             self.kill(enemy_pawn)
 
-        # Déplacer l'Assassin à la nouvelle position
+        # Move the Assassin
         super().move(new_position)
 
     def find_enemy_pawn(self, position, teams):
-        """Trouver un pion ennemi sur la position donnée."""
+        """Find ennemy pawn on position."""
         for team in teams:
             for pawn in team:
                 if pawn.position == position and pawn.is_alive and pawn.color != self.color:
@@ -87,10 +111,9 @@ class Assassin(Pawn):
         return None
 
     def kill(self, target_pawn):
-        """Tuer une pièce ennemie."""
+        """Kill ennemy pawn."""
         target_pawn.position = self.position
         target_pawn.set_alive(False)
-        # Autres logiques pour gérer le meurtre
 
 
 class Reporter(Pawn):
@@ -103,6 +126,47 @@ class Reporter(Pawn):
 
     def __init__(self, color):
         super().__init__(color, Reporter.initial_positions[color], 'Reporter')
+
+    def kill_adjacent_pawn(self, direction, teams):
+        """
+        Kills an adjacent pawn in the specified direction if possible.
+        :param direction: The direction to kill ('up', 'down', 'left', 'right').
+        :param teams: List of all teams (to find enemy pawns).
+        """
+        # Define movement based on direction
+        directions = {
+            "up": (-1, 0),
+            "down": (1, 0),
+            "left": (0, -1),
+            "right": (0, 1)
+        }
+        move_dx, move_dy = directions.get(direction, (0, 0))
+
+        # Calculate the position of the adjacent pawn
+        adjacent_x = self.position[0] + move_dx
+        adjacent_y = self.position[1] + move_dy
+        adjacent_position = (adjacent_x, adjacent_y)
+
+        # Check if adjacent position is within the board
+        if not (0 <= adjacent_x < constantes.ROWS and 0 <= adjacent_y < constantes.COLS):
+            return
+
+        # Find and kill the adjacent enemy pawn if present
+        for team in teams:
+            for pawn in team:
+                if pawn.position == adjacent_position and pawn.is_alive and pawn.color != self.color:
+                    pawn.set_alive(False)
+                    # Mise à jour après l'élimination Vous pouvez ajouter ici du code pour mettre à jour l'affichage
+                    # ou effectuer d'autres actions nécessaires
+                    return
+
+    def can_kill(self, position, teams):
+        """Check if reporter can kill pawn in select position."""
+        for team in teams:
+            for pawn in team:
+                if pawn.position == position and pawn.color != self.color and pawn.is_alive:
+                    return True
+        return False
 
 
 class Chief(Pawn):
@@ -129,14 +193,45 @@ class Militant(Pawn):
         initial_position = Militant.initial_positions[color][index]
         super().__init__(color, initial_position, 'Militant')
 
-    def can_move(self, new_position):
+    def can_move(self, new_position, teams):
         # Check if the new position is outside the board
         if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
             return False
+        # Check if the new position is the labyrinth position and the pawn is not a chief
+        if new_position == constantes.LABYRINTH_POSITION and self.type != 'Chief':
+            return False
+        # Check if the new position is occupied by an ally
+        for team in teams:
+            for pawn in team:
+                if pawn.position == new_position and pawn.color == self.color:
+                    return False
+        # Check if the new position is occupied by a chief
+        for team in teams:
+            for pawn in team:
+                if pawn.position == new_position and pawn.type == 'Chief':
+                    return False
         # Check if the new position is a valid move for the pawn
         dx = new_position[0] - self.position[0]
         dy = new_position[1] - self.position[1]
         return (dx == 0 or dy == 0 or abs(dx) == abs(dy)) and max(abs(dx), abs(dy)) <= 2
+
+    def move(self, new_position, teams=None):
+        enemy_pawn = self.find_enemy_pawn(new_position, teams)
+        if enemy_pawn and enemy_pawn.type != 'Chief':
+            self.kill(enemy_pawn, teams)
+        super().move(new_position)
+
+    def kill(self, target_pawn, teams):
+        target_pawn.set_alive(False)
+        free_positions = self.find_free_positions(teams)
+        if free_positions:
+            new_position_for_dead = random.choice(free_positions)
+            target_pawn.position = new_position_for_dead
+
+    def find_free_positions(self, teams):
+        all_positions = [(x, y) for x in range(9) for y in range(9)]
+        occupied_positions = [pawn.position for team in teams for pawn in team if pawn.is_alive]
+        return [pos for pos in all_positions if pos not in occupied_positions]
 
 
 class Diplomat(Pawn):

@@ -8,6 +8,10 @@ from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
 selected_square = None
 # Select pawn and stock it
 selected_pawn = None
+# Reporter targeting mode
+reporter_targeting_mode = False
+# Just moved reporter
+just_moved_reporter = False
 
 
 def init_pygame():
@@ -83,8 +87,10 @@ def draw_grid_lines(screen):
 
     # draw the grid lines
     for i in range(ROWS + 1):
-        pygame.draw.line(screen, (155, 155, 155), (offset_x, offset_y + i * SQUARE_SIZE), (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
-        pygame.draw.line(screen, (155, 155, 155), (offset_x + i * SQUARE_SIZE, offset_y), (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
+        pygame.draw.line(screen, (155, 155, 155), (offset_x, offset_y + i * SQUARE_SIZE),
+                         (offset_x + GRID_WIDTH, offset_y + i * SQUARE_SIZE))
+        pygame.draw.line(screen, (155, 155, 155), (offset_x + i * SQUARE_SIZE, offset_y),
+                         (offset_x + i * SQUARE_SIZE, offset_y + GRID_HEIGHT))
 
 
 def draw_piece(screen, piece):
@@ -173,6 +179,8 @@ def game_loop(screen, board, teams, background_image):
 
 
 def redraw_screen(screen, board, teams, background_image):
+    global reporter_targeting_mode
+
     offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
 
@@ -187,9 +195,12 @@ def redraw_screen(screen, board, teams, background_image):
 
     draw_pieces(screen, teams)
 
-    if selected_pawn is not None:
+    if selected_pawn and not reporter_targeting_mode:
         draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
-        draw_pawn_info(screen, selected_pawn, SCREEN_WIDTH // 2 + 20, 20)
+
+    if selected_pawn and reporter_targeting_mode:
+        draw_possible_targets(screen, selected_pawn, teams, offset_x, offset_y)
+        draw_pass_button(screen)
 
     pygame.display.flip()
 
@@ -197,35 +208,82 @@ def redraw_screen(screen, board, teams, background_image):
 pygame.font.init()
 
 
-def handle_mouse_click(event, teams, screen, background_image, board):
-    # Modify the global variable selected_square and selected_pawn
-    global selected_square, selected_pawn
+def draw_possible_targets(screen, reporter, teams, offset_x, offset_y):
+    if reporter is not None and isinstance(reporter, Reporter):
+        for direction in ["up", "down", "left", "right"]:
+            adjacent_position = reporter.get_adjacent_position(direction)
+            if reporter.can_kill(adjacent_position, teams):
+                square_x = offset_x + adjacent_position[1] * constantes.SQUARE_SIZE
+                square_y = offset_y + adjacent_position[0] * constantes.SQUARE_SIZE
+                pygame.draw.circle(screen, (255, 0, 0),
+                                   (square_x + constantes.SQUARE_SIZE // 2, square_y + constantes.SQUARE_SIZE // 2), 10)
 
-    # Handle mouse click events
+
+def draw_pass_button(screen):
+    font = pygame.font.Font(None, 36)
+    text = font.render("Pass", True, (255, 255, 255))
+    button_rect = text.get_rect(center=(constantes.SCREEN_WIDTH * 3 / 4, 20))
+    pygame.draw.rect(screen, (0, 128, 0), button_rect.inflate(20, 10))
+    screen.blit(text, button_rect)
+    return button_rect
+
+
+def handle_mouse_click(event, teams, screen, background_image, board):
+    global selected_square, selected_pawn, reporter_targeting_mode, just_moved_reporter
+
     offset_x = int(SCREEN_WIDTH * PADDING)
     offset_y = (SCREEN_HEIGHT - GRID_HEIGHT) // 2
     pos = pygame.mouse.get_pos()
-    # Adjust mouse position to account for offsets
     adjusted_x = pos[0] - offset_x
     adjusted_y = pos[1] - offset_y
-    # Calculate the row and column, taking the offsets into account
     row = adjusted_y // SQUARE_SIZE
     col = adjusted_x // SQUARE_SIZE
-    print(col, row)
 
-    # if a pawn is selected, move it to the new position
+    if reporter_targeting_mode:
+        pass_button_rect = draw_pass_button(screen)
+
+        if isinstance(selected_pawn, Reporter):
+            # Gérer le clic sur les cibles ou "Pass"
+            if selected_pawn.can_kill((row, col), teams):
+                selected_pawn.kill_adjacent_pawn((row, col), teams)
+            reporter_targeting_mode = False
+            just_moved_reporter = False
+            redraw_screen(screen, board, teams, background_image)
+            return
+
+        if pass_button_rect.collidepoint(pos):
+            reporter_targeting_mode = False
+            just_moved_reporter = False
+            redraw_screen(screen, board, teams, background_image)
+            return
+
+        # Si aucun des cas ci-dessus, ignorer le clic
+        return
+
     if selected_pawn:
         new_position = (col, row)
         if selected_pawn.can_move(new_position, teams):
             selected_pawn.move(new_position, teams)
+            just_moved_reporter = isinstance(selected_pawn, Reporter)
+            if just_moved_reporter:
+                draw_possible_targets(screen, selected_pawn, teams, offset_x, offset_y)
+                draw_pass_button(screen)
+                reporter_targeting_mode = True  # Activer le mode ciblage après avoir dessiné les cibles
+            else:
+                reporter_targeting_mode = False
             selected_square = None
             selected_pawn = None
+            redraw_screen(screen, board, teams, background_image)
+            return
         else:
-            # if the move is not valid, reset the selected pawn and square
+            # Réinitialiser les variables si le déplacement n'est pas valide
             selected_pawn = None
             selected_square = None
+            just_moved_reporter = False
+            reporter_targeting_mode = False
+
     else:
-        # verify if a pawn is present on the selected square
+        # Sélectionner un nouveau pion
         for team in teams:
             for piece in team:
                 if piece.position == (col, row):
@@ -233,12 +291,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
                     selected_square = (row, col)
                     break
 
-    screen.blit(background_image, (0, 0))
-    draw_board(screen, board)
-    draw_pieces(screen, teams)
-    draw_grid_lines(screen)
-    pygame.display.flip()
-
+    redraw_screen(screen, board, teams, background_image)
 
 def main():
     screen, background_image = init_pygame()

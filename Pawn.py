@@ -50,9 +50,6 @@ class Pawn:
             for ally in team:
                 if ally.color == self.color and ally.position == new_position and ally.is_alive:
                     return False
-        # Check if the new position is a valid move for the pawn
-        dx = new_position[0] - self.position[0]
-        dy = new_position[1] - self.position[1]
 
         return True
 
@@ -62,48 +59,72 @@ class Pawn:
             new_position = (self.position[0] + dx, self.position[1] + dx)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dx in range(1, constantes.ROWS):  # Diag vers le haut gche
             new_position = (self.position[0] - dx, self.position[1] - dx)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dx in range(1, constantes.ROWS):  # Diag vers le bas gche
             new_position = (self.position[0] - dx, self.position[1] + dx)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dx in range(1, constantes.ROWS):  # Diag vers le haut gche
             new_position = (self.position[0] + dx, self.position[1] - dx)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dy in range(1, constantes.COLS):  # Haut
             new_position = (self.position[0], self.position[1] - dy)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dy in range(1, constantes.COLS):  # Bas
             new_position = (self.position[0], self.position[1] + dy)
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dy in range(1, constantes.COLS):  # Drte
             new_position = (self.position[0] + dy, self.position[1])
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
         for dy in range(1, constantes.COLS):  # Gauche
             new_position = (self.position[0] - dy, self.position[1])
             if self.can_move(new_position, teams):
                 possible_moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
             else:
                 break
 

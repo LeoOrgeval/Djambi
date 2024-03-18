@@ -26,7 +26,7 @@ mixer.music.play()
 
 button_volume_on = classes.Button.VolumeButton((50, 50), "ON")
 button_volume_off = classes.Button.VolumeButton((50, 50), "OFF")
-
+button_volume_on.draw(surface)
 
 running = True
 while running:
@@ -34,18 +34,20 @@ while running:
         if event.type == pygame.QUIT or button_quit.is_clicked(event):
             running = False
 
-        if button_volume_on.is_clicked(event):
-            mixer.music.set_volume(0)
-        
-        if button_volume_off.is_clicked(event):
-            mixer.music.set_volume(1)
 
     surface.blit(text_surface, text_rect.topleft)
     button_play.draw(surface)
     button_quit.draw(surface)
-    button_volume_on.draw(surface)
+
+    if button_volume_on.is_clicked(event):
+        button_volume_off.draw(surface)
+        mixer.music.stop()
+
+    if button_volume_off.is_clicked(event):
+        mixer.music.play()
 
     pygame.display.flip()
+
 
 pygame.quit()
 print("fermeture du jeu")

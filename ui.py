@@ -156,3 +156,13 @@ def draw_pawn_info(screen, pawn, x, y):
         # Display the information on the screen
         screen.blit(info_type, (text_x, y_text_start))
         screen.blit(info_status, (text_x, y_text_start + 50))
+
+
+def draw_music_button(screen, music_on):
+    font = pygame.font.Font(None, 36)
+    text = font.render("Music", True, (255, 255, 255))
+    button_rect = text.get_rect(center=(constantes.SCREEN_WIDTH - 50, 20))
+    pygame.draw.rect(screen, (0, 128, 0), button_rect.inflate(20, 10))
+    screen.blit(text, button_rect)
+    return button_rect
+

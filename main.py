@@ -1,3 +1,5 @@
+from pygame.mixer import music
+
 from constantes import *
 from Board import Board
 from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
@@ -12,6 +14,8 @@ selected_pawn = None
 reporter_targeting_mode = False
 # Just moved reporter
 just_moved_reporter = False
+# Music playing
+music_playing = True
 
 
 def init_pygame():
@@ -39,8 +43,12 @@ def create_teams():
     return teams
 
 
-def game_loop(screen, board, teams, background_image):
-    global selected_square, selected_pawn
+def game_loop(screen, board, teams, background_image, music_button_rect):
+    global selected_square, selected_pawn, music_playing
+
+    music.load('assets/test.mp3')
+    # -1 means loop indefinitely
+    music.play(-1)
 
     # Main game loop
     running = True
@@ -52,19 +60,25 @@ def game_loop(screen, board, teams, background_image):
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                handle_mouse_click(event, teams, screen, background_image, board)
+                handle_mouse_click(event, teams, screen, background_image, board, music_button_rect)
+                if music_button_rect.collidepoint(event.pos):
+                    music_playing = not music_playing
+                    if music_playing:
+                        music.play(-1)
+                    else:
+                        music.stop()
                 # Redraw the screen after a click
-                redraw_screen(screen, board, teams, background_image)
+                redraw_screen(screen, board, teams, background_image, music_button_rect)
                 needs_redraw = False
 
         if needs_redraw:
-            redraw_screen(screen, board, teams, background_image)
+            redraw_screen(screen, board, teams, background_image, music_button_rect)
             needs_redraw = False
 
         clock.tick(FPS)
 
 
-def redraw_screen(screen, board, teams, background_image):
+def redraw_screen(screen, board, teams, background_image, music_button_rect):
     global reporter_targeting_mode
 
     offset_x = int(SCREEN_WIDTH * PADDING)
@@ -92,13 +106,16 @@ def redraw_screen(screen, board, teams, background_image):
         draw_possible_targets(screen, selected_pawn, teams, offset_x, offset_y)
         draw_pass_button(screen)
 
+    # Draw music button
+    draw_music_button(screen, music_on=True)
+
     pygame.display.flip()
 
 
 pygame.font.init()
 
 
-def handle_mouse_click(event, teams, screen, background_image, board):
+def handle_mouse_click(event, teams, screen, background_image, board, music_button_rect):
     global selected_square, selected_pawn, reporter_targeting_mode, just_moved_reporter
 
     offset_x = int(SCREEN_WIDTH * PADDING)
@@ -108,6 +125,11 @@ def handle_mouse_click(event, teams, screen, background_image, board):
     adjusted_y = pos[1] - offset_y
     row = adjusted_y // SQUARE_SIZE
     col = adjusted_x // SQUARE_SIZE
+
+    # Check if the music button is clicked
+    if music_button_rect.collidepoint(pos):
+        # Need help toggle music sound on off or on on when click the button:
+        pass
 
     if reporter_targeting_mode:
         pass_button_rect = draw_pass_button(screen)
@@ -160,19 +182,20 @@ def handle_mouse_click(event, teams, screen, background_image, board):
                     selected_square = (row, col)
                     break
 
-    redraw_screen(screen, board, teams, background_image)
+    redraw_screen(screen, board, teams, background_image, music_button_rect)
 
 
 def main():
     screen, background_image = init_pygame()
     board = Board()
     board.draw_board(screen)
+    music_button_rect = draw_music_button(screen, music_on=True)
     teams = create_teams()
     screen.blit(background_image, (0, 0))
     draw_pieces(screen, teams)
     draw_grid_lines(screen)
     pygame.display.flip()
-    game_loop(screen, board, teams, background_image)
+    game_loop(screen, board, teams, background_image, music_button_rect)
 
 
 if __name__ == "__main__":

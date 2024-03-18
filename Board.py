@@ -1,3 +1,8 @@
+import pygame
+
+from constantes import color, BOARD_WIDTH, BOARD_HEIGHT
+
+
 class Board:
     def __init__(self):
         # Initialisation du plateau de jeu
@@ -18,7 +23,8 @@ class Board:
             ['red chief', 'red assassin', 'red militant', '', '', '', 'blue militant', 'blue assassin', 'blue chief']
         ]
 
-    def display_board(self):
-        # Affichage du plateau de jeu
+    def draw_board(self, screen):
+        pygame.draw.rect(screen, color['BLACK'], (BOARD_WIDTH, 0, BOARD_WIDTH, BOARD_HEIGHT))
         for row in self.board:
             print(row)
+

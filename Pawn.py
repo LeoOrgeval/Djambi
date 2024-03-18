@@ -3,6 +3,12 @@ import random
 import constantes
 
 
+########################################
+#                                      #
+#            Global Pawn               #
+#                                      #
+########################################
+
 class Pawn:
     def __init__(self, color, position, pawn_type):
         self.color = constantes.color[color.upper()]
@@ -80,6 +86,11 @@ class Pawn:
         return self.position[0] + dy, self.position[1] + dx
 
 
+########################################
+#                                      #
+#              Assassin                #
+#                                      #
+########################################
 
 class Assassin(Pawn):
     initial_positions = {
@@ -115,6 +126,12 @@ class Assassin(Pawn):
         target_pawn.position = self.position
         target_pawn.set_alive(False)
 
+
+########################################
+#                                      #
+#              Reporter                #
+#                                      #
+########################################
 
 class Reporter(Pawn):
     initial_positions = {
@@ -169,6 +186,12 @@ class Reporter(Pawn):
         return False
 
 
+########################################
+#                                      #
+#               Chief                  #
+#                                      #
+########################################
+
 class Chief(Pawn):
     initial_positions = {
         'red': (0, 0),
@@ -180,6 +203,12 @@ class Chief(Pawn):
     def __init__(self, color):
         super().__init__(color, Chief.initial_positions[color], 'Chief')
 
+
+########################################
+#                                      #
+#              Militant                #
+#                                      #
+########################################
 
 class Militant(Pawn):
     initial_positions = {
@@ -234,6 +263,12 @@ class Militant(Pawn):
         return [pos for pos in all_positions if pos not in occupied_positions]
 
 
+########################################
+#                                      #
+#              Diplomat                #
+#                                      #
+########################################
+
 class Diplomat(Pawn):
     initial_positions = {
         'red': (0, 1),
@@ -245,6 +280,12 @@ class Diplomat(Pawn):
     def __init__(self, color):
         super().__init__(color, Diplomat.initial_positions[color], 'Diplomat')
 
+
+########################################
+#                                      #
+#            Necromobile               #
+#                                      #
+########################################
 
 class Necromobile(Pawn):
     initial_positions = {

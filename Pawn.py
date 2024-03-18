@@ -53,15 +53,60 @@ class Pawn:
         # Check if the new position is a valid move for the pawn
         dx = new_position[0] - self.position[0]
         dy = new_position[1] - self.position[1]
-        return dx == 0 or dy == 0 or abs(dx) == abs(dy)
+
+        return True
 
     def get_possible_moves(self, teams):
         possible_moves = []
-        for dx in range(-constantes.ROWS, constantes.ROWS):
-            for dy in range(-constantes.COLS, constantes.COLS):
-                new_position = (self.position[0] + dx, self.position[1] + dy)
-                if self.can_move(new_position, teams):
-                    possible_moves.append(new_position)
+        for dx in range(1, constantes.ROWS):  # Diag vers le bas dte
+            new_position = (self.position[0] + dx, self.position[1] + dx)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dx in range(1, constantes.ROWS):  # Diag vers le haut gche
+            new_position = (self.position[0] - dx, self.position[1] - dx)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dx in range(1, constantes.ROWS):  # Diag vers le bas gche
+            new_position = (self.position[0] - dx, self.position[1] + dx)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dx in range(1, constantes.ROWS):  # Diag vers le haut gche
+            new_position = (self.position[0] + dx, self.position[1] - dx)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dy in range(1, constantes.COLS):  # Haut
+            new_position = (self.position[0], self.position[1] - dy)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dy in range(1, constantes.COLS):  # Bas
+            new_position = (self.position[0], self.position[1] + dy)
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dy in range(1, constantes.COLS):  # Drte
+            new_position = (self.position[0] + dy, self.position[1])
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+        for dy in range(1, constantes.COLS):  # Gauche
+            new_position = (self.position[0] - dy, self.position[1])
+            if self.can_move(new_position, teams):
+                possible_moves.append(new_position)
+            else:
+                break
+
         return possible_moves
 
     def find_enemy_pawn(self, position, teams):

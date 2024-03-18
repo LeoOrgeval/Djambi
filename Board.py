@@ -25,5 +25,3 @@ class Board:
 
     def draw_board(self, screen):
         pygame.draw.rect(screen, color['BLACK'], (BOARD_WIDTH, 0, BOARD_WIDTH, BOARD_HEIGHT))
-        for row in self.board:
-            print(row)

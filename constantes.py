@@ -66,3 +66,7 @@ FPS = 20
 
 # Images for the board
 BOARD_BACKGROUND = './assets/board.png'
+
+
+# Fonts
+MYFONT = 'ProtestStrike-Regular.ttf'

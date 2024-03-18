@@ -39,10 +39,7 @@ def create_teams():
     return teams
 
 
-def draw_board(screen, board):
-    # Draw the game board and the background
-    pygame.draw.rect(screen, color['BLACK'], (BOARD_WIDTH, 0, BOARD_WIDTH, BOARD_HEIGHT))
-    board.display_board()
+
 
 
 def draw_pieces(screen, teams):
@@ -195,6 +192,10 @@ def redraw_screen(screen, board, teams, background_image):
 
     draw_pieces(screen, teams)
 
+    if selected_pawn is not None:
+        draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
+        draw_pawn_info(screen, selected_pawn, SCREEN_WIDTH // 2 + 20, 20)
+
     if selected_pawn and not reporter_targeting_mode:
         draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
 
@@ -243,7 +244,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
         pass_button_rect = draw_pass_button(screen)
 
         if isinstance(selected_pawn, Reporter):
-            # Gérer le clic sur les cibles ou "Pass"
+
             if selected_pawn.can_kill((row, col), teams):
                 selected_pawn.kill_adjacent_pawn((row, col), teams)
             reporter_targeting_mode = False
@@ -257,7 +258,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
             redraw_screen(screen, board, teams, background_image)
             return
 
-        # Si aucun des cas ci-dessus, ignorer le clic
+
         return
 
     if selected_pawn:
@@ -268,7 +269,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
             if just_moved_reporter:
                 draw_possible_targets(screen, selected_pawn, teams, offset_x, offset_y)
                 draw_pass_button(screen)
-                reporter_targeting_mode = True  # Activer le mode ciblage après avoir dessiné les cibles
+                reporter_targeting_mode = True
             else:
                 reporter_targeting_mode = False
             selected_square = None
@@ -276,14 +277,14 @@ def handle_mouse_click(event, teams, screen, background_image, board):
             redraw_screen(screen, board, teams, background_image)
             return
         else:
-            # Réinitialiser les variables si le déplacement n'est pas valide
+
             selected_pawn = None
             selected_square = None
             just_moved_reporter = False
             reporter_targeting_mode = False
 
     else:
-        # Sélectionner un nouveau pion
+
         for team in teams:
             for piece in team:
                 if piece.position == (col, row):
@@ -292,6 +293,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
                     break
 
     redraw_screen(screen, board, teams, background_image)
+
 
 def main():
     screen, background_image = init_pygame()

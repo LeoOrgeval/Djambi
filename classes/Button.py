@@ -21,6 +21,7 @@ class Button:
             if self.rect.collidepoint(event.pos):
                 return True
         return False
+                
 
 class MiddleButton(Button):
     def __init__(self, dimensions : tuple, text,offset:tuple = (0,0), action = None):
@@ -29,4 +30,17 @@ class MiddleButton(Button):
        x = (constants.SURFACE_WIDTH - width) // 2
        y =( constants.SURFACE_HEIGHT - height) // 2
        super().__init__(x + offset_x, y + offset_y, width, height, text, constants.COLOR_BLUE, constants.COLOR_WHITE, action)
-    
+
+class VolumeButton(Button):
+    def __init__(self, dimensions : tuple, text, offset:tuple = (0,0), action = None):
+       (width, height) = dimensions
+       (offset_x, offset_y) = offset
+       x = (constants.SURFACE_WIDTH - width) 
+       y =(constants.SURFACE_HEIGHT - height)
+       super().__init__(x + offset_x, y + offset_y, width, height, text, constants.COLOR_BLUE, constants.COLOR_WHITE, action)
+       
+    #    self.sound_enabled = True
+
+       def toggle_sound(self):
+        self.sound_enabled = not self.sound_enabled
+        self.set_icon(self.icon_on if self.sound_enabled else self.icon_off)

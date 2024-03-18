@@ -127,10 +127,9 @@ def handle_mouse_click(event, teams, screen, background_image, board):
             redraw_screen(screen, board, teams, background_image)
             return
 
-
         return
 
-    if selected_pawn:
+    if selected_pawn and selected_pawn.is_alive:
         new_position = (col, row)
         if selected_pawn.can_move(new_position, teams):
             selected_pawn.move(new_position, teams)
@@ -156,7 +155,7 @@ def handle_mouse_click(event, teams, screen, background_image, board):
 
         for team in teams:
             for piece in team:
-                if piece.position == (col, row):
+                if piece.position == (col, row) and piece.is_alive:
                     selected_pawn = piece
                     selected_square = (row, col)
                     break

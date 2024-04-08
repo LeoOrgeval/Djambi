@@ -66,6 +66,7 @@ FPS = 20
 
 # Images for the board
 BOARD_BACKGROUND = './assets/board.png'
+WANTED_BACKGROUND = './assets/wanted.png'
 
 
 # Fonts

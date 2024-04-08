@@ -36,7 +36,7 @@ def main():
     Board.main_menu(screen, background_image)
 
     # Init the game
-    board = Board()
+    board = Board.Board()
     board.draw_board(screen)
     music_button_rect = ui.draw_music_button(screen, music_on=True)
     teams = Players.create_teams()

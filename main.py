@@ -40,8 +40,8 @@ while running:
     button_quit.draw(surface)
 
     if button_volume_on.is_clicked(event):
-        button_volume_off.draw(surface)
         mixer.music.stop()
+        button_volume_off.draw(surface)
 
     if button_volume_off.is_clicked(event):
         mixer.music.play()

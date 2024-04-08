@@ -5,7 +5,13 @@ from pygame.mixer import music
 
 from constantes import *
 from Board import Board
-from Pawn import Assassin, Reporter, Chief, Militant, Diplomat, Necromobile
+from Pawn.Pawn import Pawn
+from Pawn.Subclass.Chief import Chief
+from Pawn.Subclass.Reporter import Reporter
+from Pawn.Subclass.Assassin import Assassin
+from Pawn.Subclass.Diplomat import Diplomat
+from Pawn.Subclass.Militant import Militant
+from Pawn.Subclass.Necromobile import Necromobile
 from ui import *
 import button
 

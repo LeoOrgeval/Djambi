@@ -1,7 +1,7 @@
 import pygame
 
 import constantes
-from Pawn import Reporter
+from Pawn.Subclass.Reporter import Reporter
 from constantes import *
 
 

@@ -38,7 +38,7 @@ class Pawn:
     def move(self, new_position, teams=None):
         self.position = tuple(new_position)
 
-    def can_move(self, new_position, teams):
+    def __can_move(self, new_position, teams):
         # Check if the new position is outside the board
         if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
             return False
@@ -50,18 +50,33 @@ class Pawn:
             for ally in team:
                 if ally.color == self.color and ally.position == new_position and ally.is_alive:
                     return False
-        # Check if the new position is a valid move for the pawn
-        dx = new_position[0] - self.position[0]
-        dy = new_position[1] - self.position[1]
-        return dx == 0 or dy == 0 or abs(dx) == abs(dy)
+
+        return True
+
+    def __get_possible_moves(self, teams, dx, dy):
+        moves = []
+        for i in range(1, constantes.ROWS):  # Diag vers le bas dte
+            new_position = (self.position[0] + dx*i, self.position[1] + dy*i)
+            if self.__can_move(new_position, teams):
+                moves.append(new_position)
+                # Break if an enemy pawn is encountered
+                if self.find_enemy_pawn(new_position, teams):
+                    break
+            else:
+                break
+        return moves
 
     def get_possible_moves(self, teams):
         possible_moves = []
-        for dx in range(-constantes.ROWS, constantes.ROWS):
-            for dy in range(-constantes.COLS, constantes.COLS):
-                new_position = (self.position[0] + dx, self.position[1] + dy)
-                if self.can_move(new_position, teams):
-                    possible_moves.append(new_position)
+        possible_moves.extend(self.__get_possible_moves(teams, 1, 1))
+        possible_moves.extend(self.__get_possible_moves(teams, -1, -1))
+        possible_moves.extend(self.__get_possible_moves(teams, -1, 1))
+        possible_moves.extend(self.__get_possible_moves(teams, 1, -1))
+        possible_moves.extend(self.__get_possible_moves(teams, 1, 0))
+        possible_moves.extend(self.__get_possible_moves(teams, 0, 1))
+        possible_moves.extend(self.__get_possible_moves(teams, 0, -1))
+        possible_moves.extend(self.__get_possible_moves(teams, -1, 0))
+
         return possible_moves
 
     def find_enemy_pawn(self, position, teams):
@@ -222,7 +237,7 @@ class Militant(Pawn):
         initial_position = Militant.initial_positions[color][index]
         super().__init__(color, initial_position, 'Militant')
 
-    def can_move(self, new_position, teams):
+    def __can_move(self, new_position, teams):
         # Check if the new position is outside the board
         if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
             return False

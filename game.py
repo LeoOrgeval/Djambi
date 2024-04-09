@@ -65,7 +65,7 @@ class Game:
 
         # Sound
         mixer.init()
-        sound = music.load("assets/jurassic_park.mp3")
+        sound = music.load("assets/main_menu_song.mp3")
         mixer.music.set_volume(1)
         mixer.music.play()
 
@@ -117,7 +117,8 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
-        music.load('assets/test.mp3')
+        music.load('assets/game_song.mp3')
+        music.set_volume(0.3)
         # -1 means loop indefinitely
         music.play(-1)
 

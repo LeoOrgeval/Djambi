@@ -59,3 +59,13 @@ class Militant(Pawn):
         all_positions = [(x, y) for x in range(9) for y in range(9)]
         occupied_positions = [pawn.position for team in teams for pawn in team if pawn.is_alive]
         return [pos for pos in all_positions if pos not in occupied_positions]
+
+
+    def get_possible_moves(self, teams):
+        possible_moves = []
+        for dx in range(-2, 3):
+            for dy in range(-2, 3):
+                new_position = (self.position[0] + dx, self.position[1] + dy)
+                if self.__can_move(new_position, teams):
+                    possible_moves.append(new_position)
+        return possible_moves

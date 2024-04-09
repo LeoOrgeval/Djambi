@@ -64,18 +64,18 @@ class Pawn:
                 break
         return moves
 
-    def get_possible_moves(self, teams):
-        possible_moves = []
-        possible_moves.extend(self.__get_possible_moves(teams, 1, 1))
-        possible_moves.extend(self.__get_possible_moves(teams, -1, -1))
-        possible_moves.extend(self.__get_possible_moves(teams, -1, 1))
-        possible_moves.extend(self.__get_possible_moves(teams, 1, -1))
-        possible_moves.extend(self.__get_possible_moves(teams, 1, 0))
-        possible_moves.extend(self.__get_possible_moves(teams, 0, 1))
-        possible_moves.extend(self.__get_possible_moves(teams, 0, -1))
-        possible_moves.extend(self.__get_possible_moves(teams, -1, 0))
+    # def get_possible_moves(self, teams):
+    #     possible_moves = []
+    #     possible_moves.extend(self.__get_possible_moves(teams, 1, 1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, -1, -1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, -1, 1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, 1, -1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, 1, 0))
+    #     possible_moves.extend(self.__get_possible_moves(teams, 0, 1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, 0, -1))
+    #     possible_moves.extend(self.__get_possible_moves(teams, -1, 0))
 
-        return possible_moves
+        # return possible_moves
 
     def find_enemy_pawn(self, position, teams):
         """Find ennemy pawn on select position."""

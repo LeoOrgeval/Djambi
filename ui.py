@@ -1,7 +1,7 @@
 import pygame
 
 import constantes
-from Pawn import Reporter
+from Pawn.Subclass.Reporter import Reporter
 from constantes import *
 
 
@@ -122,8 +122,6 @@ def draw_line(screen, i):
 #                                      #
 ########################################
 
-
-
 def draw_pass_button(screen):
     font = pygame.font.Font(None, 36)
     text = font.render("Pass", True, (255, 255, 255))
@@ -140,6 +138,8 @@ def draw_pawn_info(screen, pawn, x, y):
 
         # Calculate the middle point of the screen
         middle_point = SCREEN_WIDTH // 2 + SCREEN_WIDTH // 4
+
+        pygame.draw.rect(screen, (0, 0, 0), (middle_point, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT))
 
         # Loading the pawn image
         pawn_image = pygame.image.load(pawn.image)

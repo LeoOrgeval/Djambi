@@ -50,6 +50,7 @@ class Game:
 
     def next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
+        self.display_current_player()
 
     def display_current_player(self):
         current_player = self.players[self.current_player_index]
@@ -128,6 +129,7 @@ class Game:
         draw_grid_lines(self.screen)
         self.board.redraw()
         pygame.display.flip()
+        self.display_current_player()
         self.game_loop()
 
     def game_loop(self):
@@ -173,10 +175,8 @@ class Game:
         adjusted_y = pos[1] - offset_y
         row = adjusted_y // constantes.SQUARE_SIZE
         col = adjusted_x // constantes.SQUARE_SIZE
-        print(f"Clic en position : row={row}, col={col}")  # Afficher la position du clic
 
         current_player = self.players[self.current_player_index]
-        print(f"Joueur actuel : {current_player.color}")  # Débogage
 
         # Check if the music button is clicked
         # if music_button_rect.collidepoint(pos):
@@ -203,7 +203,7 @@ class Game:
                 return
 
         if self.selected_pawn and self.selected_pawn.is_alive:
-            print(f"Couleur du pion sélectionné : {self.selected_pawn.color}")
+            # print(f"Couleur du pion sélectionné : {self.selected_pawn.color}")
             if self.selected_pawn.color == constantes.color[current_player.color]:
                 new_position = (col, row)
                 if new_position in self.selected_pawn.get_possible_moves(self.teams):
@@ -222,7 +222,7 @@ class Game:
                     self.selected_square = None
                     self.just_moved_reporter = False
                     self.reporter_targeting_mode = False
-                    print("Ce n'est pas le tour de ce joueur")
+                    # print("Ce n'est pas le tour de ce joueur")
 
         else:
             for team in self.teams:
@@ -232,7 +232,7 @@ class Game:
                         if piece.color == piece_color_rgb:
                             self.selected_pawn = piece
                             self.selected_square = (row, col)
-                            print("Pion sélectionné")
+                            # print("Pion sélectionné")
                             return
                         else:
                             print("Pion trouvé, mais pas de la bonne couleur")

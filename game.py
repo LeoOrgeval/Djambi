@@ -11,14 +11,15 @@ from Pawn.Subclass.Diplomat import Diplomat
 from Pawn.Subclass.Militant import Militant
 from Pawn.Subclass.Necromobile import Necromobile
 
+
 class Game:
-    screen : pygame.SurfaceType
-    background_image : pygame.SurfaceType
-    wanted_image : pygame.SurfaceType
+    screen: pygame.SurfaceType
+    background_image: pygame.SurfaceType
+    wanted_image: pygame.SurfaceType
     teams: list
-    reporter_targeting_mode : bool = False
-    selected_pawn : Pawn.Pawn = None
-    just_moved_reporter : bool = False
+    reporter_targeting_mode: bool = False
+    selected_pawn: Pawn.Pawn = None
+    just_moved_reporter: bool = False
 
     def __init__(self):
         # Initialize pygame
@@ -37,7 +38,6 @@ class Game:
         self.board = Board.Board(self)
         self.music_button_rect = draw_music_button(self.screen, music_on=True)
         self.needs_redraw = False
-
 
     def __create_teams(self):
         # Create all teams and return them in a list
@@ -111,6 +111,7 @@ class Game:
         self.screen.blit(self.wanted_image, (constantes.SCREEN_WIDTH // 2, 0))
         draw_pieces(self.screen, self.teams)
         draw_grid_lines(self.screen)
+        self.board.redraw()
         pygame.display.flip()
         self.game_loop()
 
@@ -146,8 +147,6 @@ class Game:
                 self.needs_redraw = False
 
             clock.tick(FPS)
-
-
 
     def __handle_mouse_click(self):
         offset_x = int(constantes.SCREEN_WIDTH * constantes.PADDING)

@@ -19,6 +19,7 @@ class Militant(Pawn):
     def __init__(self, color, index):
         initial_position = Militant.initial_positions[color][index]
         super().__init__(color, initial_position, 'Militant')
+        self.max_range = 3
 
     def __can_move(self, new_position, teams):
         # Check if the new position is outside the board
@@ -55,17 +56,11 @@ class Militant(Pawn):
             new_position_for_dead = random.choice(free_positions)
             target_pawn.position = new_position_for_dead
 
-    def find_free_positions(self, teams):
-        all_positions = [(x, y) for x in range(9) for y in range(9)]
-        occupied_positions = [pawn.position for team in teams for pawn in team if pawn.is_alive]
-        return [pos for pos in all_positions if pos not in occupied_positions]
+    # def find_free_positions(self, teams):
+    #     all_positions = [(x, y) for x in range(2) for y in range(2)]
+    #     occupied_positions = [pawn.position for team in teams for pawn in team if pawn.is_alive]
+    #     return [pos for pos in all_positions if pos not in occupied_positions]
 
 
-    def get_possible_moves(self, teams):
-        possible_moves = []
-        for dx in range(-2, 3):
-            for dy in range(-2, 3):
-                new_position = (self.position[0] + dx, self.position[1] + dy)
-                if self.__can_move(new_position, teams):
-                    possible_moves.append(new_position)
-        return possible_moves
+
+

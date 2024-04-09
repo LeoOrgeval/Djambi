@@ -53,11 +53,11 @@ class Diplomat(Pawn):
         # Moving pawn
         target_pawn.position = self.position
 
-    def get_possible_moves(self, teams):
-        possible_moves = []
-        for dx in range(-10, 10):
-            for dy in range(-10, 10):
-                new_position = (self.position[0] + dx, self.position[1] + dy)
-                if self.__can_move(new_position, teams):
-                    possible_moves.append(new_position)
-        return possible_moves
+    # def get_possible_moves(self, teams):
+    #     possible_moves = []
+    #     for dx in range(-10, 10):
+    #         for dy in range(-10, 10):
+    #             new_position = (self.position[0] + dx, self.position[1] + dy)
+    #             if self.__can_move(new_position, teams):
+    #                 possible_moves.append(new_position)
+    #     return possible_moves

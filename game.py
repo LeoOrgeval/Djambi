@@ -18,6 +18,7 @@ class Game:
     wanted_image: pygame.SurfaceType
     teams: list
     reporter_targeting_mode: bool = False
+    selected_square: tuple = None
     selected_pawn: Pawn.Pawn = None
     just_moved_reporter: bool = False
 

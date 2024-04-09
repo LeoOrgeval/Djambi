@@ -31,14 +31,14 @@ class Board:
                                                                        constantes.BOARD_WIDTH, constantes.BOARD_HEIGHT))
 
     def redraw(self):
+        self.__draw_board()
 
         offset_x = int(constantes.SCREEN_WIDTH * constantes.PADDING)
         offset_y = (constantes.SCREEN_HEIGHT - constantes.GRID_HEIGHT) // 2
 
-        # screen.blit(background_image, (0, 0))
+        self.game.screen.blit(self.game.background_image, (0, 0))
         self.game.screen.blit(self.game.wanted_image, (constantes.SCREEN_WIDTH // 2, 0))
 
-        self.__draw_board()
         ui.draw_grid_lines(self.game.screen)
 
         if self.game.selected_square is not None:

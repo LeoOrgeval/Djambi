@@ -1,6 +1,7 @@
 import pygame
 
 import constantes
+import ui
 from Pawn.Subclass.Reporter import Reporter
 from constantes import *
 
@@ -170,8 +171,16 @@ def draw_current_player(screen, current_player):
     pygame.draw.rect(screen, constantes.color['BLACK'], clear_rect)
 
     # Display the current player on the screen
-    player_text = f"Tour de : {current_player.color}"
-    player_text_surface = font.render(player_text, True, (255, 255, 255))
+    player_messages = {
+        'RED': "Les enfants de Surtr attaque !",
+        'BLUE': "Au tour des larbins d'Aquaman !",
+        'GREEN': "Les disciples de la Terre se déchainent !",
+        'YELLOW': "Les soldats d'Apophis se réveillent !"
+    }
+
+    player_text = player_messages.get(current_player.color)
+    player_text_surface = font.render(player_text, True, constantes.color[current_player.color])
+
     text_x = SCREEN_WIDTH // 2 - player_text_surface.get_width() // 2
     screen.blit(player_text_surface, (text_x, y_text_start))
 

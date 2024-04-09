@@ -191,7 +191,9 @@ class Game:
             pass_button_rect = draw_pass_button(self.screen)
 
             if isinstance(self.selected_pawn, Reporter) and self.selected_pawn.color == current_player.color.lower():
+                print("Reporter is selected")
                 if self.selected_pawn.can_kill((row, col), self.teams):
+                    print("Reporter can kill")
                     self.selected_pawn.kill_adjacent_pawn((row, col), self.teams)
                     self.next_player()
                 self.reporter_targeting_mode = False

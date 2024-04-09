@@ -131,17 +131,9 @@ def draw_pass_button(screen):
     return button_rect
 
 
-def draw_pawn_info(screen, pawn, x, y, current_player):
-    font = pygame.font.Font(None, 50)
-    y_text_start = SQUARE_SIZE * 3.6
-
-    # Display player color
-    player_text = f"Tour de : {current_player.color}"
-    player_text_surface = font.render(player_text, True, (255, 255, 255))
-    text_x = SCREEN_WIDTH // 2 - player_text_surface.get_width() // 2
-    screen.blit(player_text_surface, (text_x, y_text_start + 100))
-
+def draw_pawn_info(screen, pawn, x, y):
     if pawn is not None:
+        font = pygame.font.Font(None, 50)
 
         # Calculate the middle point of the screen
         middle_point = SCREEN_WIDTH // 2 + SCREEN_WIDTH // 4
@@ -160,18 +152,34 @@ def draw_pawn_info(screen, pawn, x, y, current_player):
 
         # Calculate the position of the text
         text_x = middle_point - info_type.get_width() // 2
+        y_text_start = SQUARE_SIZE * 3.6
 
         # Display the information on the screen
         screen.blit(info_type, (text_x, y_text_start))
         screen.blit(info_status, (text_x, y_text_start + 50))
 
 
+def draw_current_player(screen, current_player):
+    # Display the current player on the screen
+    # Calculate the position of the text and font size
+    font = pygame.font.Font(None, 50)
+    y_text_start = SQUARE_SIZE * 0
+
+    # Clear the previous text
+    clear_rect = (0, y_text_start, SCREEN_WIDTH, font.get_height())
+    pygame.draw.rect(screen, constantes.color['BLACK'], clear_rect)
+
+    # Display the current player on the screen
+    player_text = f"Tour de : {current_player.color}"
+    player_text_surface = font.render(player_text, True, (255, 255, 255))
+    text_x = SCREEN_WIDTH // 2 - player_text_surface.get_width() // 2
+    screen.blit(player_text_surface, (text_x, y_text_start))
+
 
 def draw_music_button(screen, music_on):
     font = pygame.font.Font(None, 36)
     text = font.render("Music", True, (255, 255, 255))
-    button_rect = text.get_rect(center=(constantes.SCREEN_WIDTH - 50, 20))
+    button_rect = text.get_rect(center=(constantes.SCREEN_WIDTH - 50, constantes.SCREEN_HEIGHT - 20))
     pygame.draw.rect(screen, (0, 128, 0), button_rect.inflate(20, 10))
     screen.blit(text, button_rect)
     return button_rect
-

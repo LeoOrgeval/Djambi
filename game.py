@@ -4,6 +4,8 @@ import button
 import random
 from pygame.mixer import music
 from pygame import mixer
+
+import ui
 from ui import *
 from Pawn.Subclass.Chief import Chief
 from Pawn.Subclass.Reporter import Reporter
@@ -54,7 +56,6 @@ class Game:
 
     def display_current_player(self):
         current_player = self.players[self.current_player_index]
-        draw_pawn_info(self.screen, None, None, None, current_player)
         pygame.display.flip()
 
     def __create_teams(self):
@@ -161,7 +162,8 @@ class Game:
                     self.board.redraw()
                     # Board.redraw_screen(screen, board, teams, background_image, wanted_image, music_button_rect)
                     self.needs_redraw = False
-
+            ui.draw_current_player(self.screen, self.players[self.current_player_index])
+            pygame.display.flip()
         if self.needs_redraw:
             self.board.redraw()
             self.needs_redraw = False

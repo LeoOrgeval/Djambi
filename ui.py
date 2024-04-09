@@ -139,7 +139,7 @@ def draw_pawn_info(screen, pawn, x, y):
         # Calculate the middle point of the screen
         middle_point = SCREEN_WIDTH // 2 + SCREEN_WIDTH // 4
 
-        pygame.draw.rect(screen, (0, 0, 0), (middle_point, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT))
+        # pygame.draw.rect(screen, (0, 0, 0), (middle_point, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT))
 
         # Loading the pawn image
         pawn_image = pygame.image.load(pawn.image)

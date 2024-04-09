@@ -54,7 +54,8 @@ class Game:
 
     def display_current_player(self):
         current_player = self.players[self.current_player_index]
-        print(f"C'est le tour de {current_player}")
+        draw_pawn_info(self.screen, None, None, None, current_player)
+        pygame.display.flip()
 
     def __create_teams(self):
         self.teams = []

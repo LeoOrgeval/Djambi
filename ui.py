@@ -131,10 +131,17 @@ def draw_pass_button(screen):
     return button_rect
 
 
-def draw_pawn_info(screen, pawn, x, y):
+def draw_pawn_info(screen, pawn, x, y, current_player):
+    font = pygame.font.Font(None, 50)
+    y_text_start = SQUARE_SIZE * 3.6
+
+    # Display player color
+    player_text = f"Tour de : {current_player.color}"
+    player_text_surface = font.render(player_text, True, (255, 255, 255))
+    text_x = SCREEN_WIDTH // 2 - player_text_surface.get_width() // 2
+    screen.blit(player_text_surface, (text_x, y_text_start + 100))
+
     if pawn is not None:
-        # Font for the information
-        font = pygame.font.Font(None, 50)
 
         # Calculate the middle point of the screen
         middle_point = SCREEN_WIDTH // 2 + SCREEN_WIDTH // 4
@@ -148,7 +155,6 @@ def draw_pawn_info(screen, pawn, x, y):
         screen.blit(pawn_image, (image_x, SQUARE_SIZE))
 
         # Pawn information
-        y_text_start = SQUARE_SIZE * 3.6
         info_type = font.render(f"Type: {pawn.type}", True, (255, 255, 255))
         info_status = font.render(f"Status: {'Alive' if pawn.is_alive else 'Died'}", True, (255, 255, 255))
 
@@ -158,6 +164,7 @@ def draw_pawn_info(screen, pawn, x, y):
         # Display the information on the screen
         screen.blit(info_type, (text_x, y_text_start))
         screen.blit(info_status, (text_x, y_text_start + 50))
+
 
 
 def draw_music_button(screen, music_on):

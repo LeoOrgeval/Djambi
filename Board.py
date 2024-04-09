@@ -51,7 +51,8 @@ class Board:
 
         if self.game.selected_pawn is not None:
             ui.draw_possible_moves(self.game.screen, self.game.selected_pawn, offset_x, offset_y, self.game.teams)
-            ui.draw_pawn_info(self.game.screen, self.game.selected_pawn, constantes.SCREEN_WIDTH // 2 + 20, 20)
+            ui.draw_pawn_info(self.game.screen, self.game.selected_pawn, constantes.SCREEN_WIDTH // 2 + 20, 20,
+                              self.game.players[self.game.current_player_index])
 
         if self.game.selected_pawn and not self.game.reporter_targeting_mode:
             ui.draw_possible_moves(self.game.screen, self.game.selected_pawn, offset_x, offset_y, self.game.teams)

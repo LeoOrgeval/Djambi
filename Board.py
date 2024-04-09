@@ -3,21 +3,10 @@ import constantes
 import main
 import ui
 
-# Global variables
-# Selected square by the user
-selected_square = None
-# Select pawn and stock it
-selected_pawn = None
-# Reporter targeting mode
-reporter_targeting_mode = False
-# Just moved reporter
-just_moved_reporter = False
-# Music playing
-music_playing = True
-
-
 class Board:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
+
         # Initialisation du plateau de jeu
         self.board = [
             ['green chief', 'green assassin', 'green militant', '', '', '', 'yellow militant', 'yellow assassin',
@@ -35,67 +24,44 @@ class Board:
              'blue diplomate'],
             ['red chief', 'red assassin', 'red militant', '', '', '', 'blue militant', 'blue assassin', 'blue chief']
         ]
+        self.__draw_board()
 
-    def draw_board(self, screen):
-        pygame.draw.rect(screen, constantes.color['BLACK'], (constantes.BOARD_WIDTH, 0, constantes.BOARD_WIDTH, constantes.BOARD_HEIGHT))
+    def __draw_board(self):
+        pygame.draw.rect(self.game.screen, constantes.color['BLACK'], (constantes.BOARD_WIDTH, 0, constantes.BOARD_WIDTH, constantes.BOARD_HEIGHT))
 
-def main_menu(screen, background_image):
-    running = True
-    menu_background = pygame.image.load("assets/main_background.png")
-    menu_background = pygame.transform.scale(menu_background, (constantes.SCREEN_WIDTH, constantes.SCREEN_HEIGHT))
+    def redraw( self):
+        global reporter_targeting_mode
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Vérifiez si l'utilisateur a cliqué sur le bouton "Play"
-                if main.button_play.rect.collidepoint(event.pos):
-                    running = False
+        offset_x = int(constantes.SCREEN_WIDTH * constantes.PADDING)
+        offset_y = (constantes.SCREEN_HEIGHT - constantes.GRID_HEIGHT) // 2
 
-        # Effacez l'écran et dessinez le menu principal
-        screen.blit(menu_background, (0, 0))
-        screen.blit(main.text_surface,main.text_rect)
+        # screen.blit(background_image, (0, 0))
+        self.game.screen.blit(self.game.wanted_image, (constantes.SCREEN_WIDTH // 2, 0))
 
-        main.button_play.draw(screen)
-        main.button_quit.draw(screen)
+        self.__draw_board()
+        ui.draw_grid_lines(self.game.screen)
+
+        if self.game.selected_square is not None:
+            selected_x = offset_x + self.game.selected_square[1] * constantes.SQUARE_SIZE
+            selected_y = offset_y + self.game.selected_square[0] * constantes.SQUARE_SIZE
+            pygame.draw.rect(self.game.screen, (150, 150, 150), (selected_x, selected_y, constantes.SQUARE_SIZE, constantes.SQUARE_SIZE))
+
+        ui.draw_pieces(self.game.screen, self.game.teams)
+
+        if self.game.selected_pawn is not None:
+            ui.draw_possible_moves(self.game.screen, self.game.selected_pawn, offset_x, offset_y, self.game.teams)
+            ui.draw_pawn_info(self.game.screen, self.game.selected_pawn, constantes.SCREEN_WIDTH // 2 + 20, 20)
+
+        if self.game.selected_pawn and not reporter_targeting_mode:
+            ui.draw_possible_moves(self.game.screen, self.game.selected_pawn, offset_x, offset_y, self.game.teams)
+
+        if self.game.selected_pawn and reporter_targeting_mode:
+            ui.draw_possible_targets(self.game.screen, self.game.selected_pawn, self.game.teams, offset_x, offset_y)
+            ui.draw_pass_button(self.game.screen)
+
+        # Draw music button
+        ui.draw_music_button(self.game.screen, music_on=True)
+
         pygame.display.flip()
 
-def redraw_screen(screen, board, teams, background_image, wanted_image, music_button_rect=None):
-    global reporter_targeting_mode
-
-    offset_x = int(constantes.SCREEN_WIDTH * constantes.PADDING)
-    offset_y = (constantes.SCREEN_HEIGHT - constantes.GRID_HEIGHT) // 2
-
-    # screen.blit(background_image, (0, 0))
-    screen.blit(wanted_image, (constantes.SCREEN_WIDTH // 2, 0))
-
-    board.draw_board(screen)
-    ui.draw_grid_lines(screen)
-
-    if selected_square is not None:
-        selected_x = offset_x + selected_square[1] * constantes.SQUARE_SIZE
-        selected_y = offset_y + selected_square[0] * constantes.SQUARE_SIZE
-        pygame.draw.rect(screen, (150, 150, 150), (selected_x, selected_y, constantes.SQUARE_SIZE, constantes.SQUARE_SIZE))
-
-    ui.draw_pieces(screen, teams)
-
-    if selected_pawn is not None:
-        ui.draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
-        ui.draw_pawn_info(screen, selected_pawn, constantes.SCREEN_WIDTH // 2 + 20, 20)
-
-    if selected_pawn and not reporter_targeting_mode:
-        ui.draw_possible_moves(screen, selected_pawn, offset_x, offset_y, teams)
-
-    if selected_pawn and reporter_targeting_mode:
-        ui.draw_possible_targets(screen, selected_pawn, teams, offset_x, offset_y)
-        ui.draw_pass_button(screen)
-
-    # Draw music button
-    ui.draw_music_button(screen, music_on=True)
-
-    pygame.display.flip()
-
-pygame.font.init()
 

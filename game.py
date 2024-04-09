@@ -1,8 +1,9 @@
 import Pawn
 import Board
 import button
+import random
 from pygame.mixer import music
-from pygame import  mixer
+from pygame import mixer
 from ui import *
 from Pawn.Subclass.Chief import Chief
 from Pawn.Subclass.Reporter import Reporter
@@ -10,6 +11,7 @@ from Pawn.Subclass.Assassin import Assassin
 from Pawn.Subclass.Diplomat import Diplomat
 from Pawn.Subclass.Militant import Militant
 from Pawn.Subclass.Necromobile import Necromobile
+from Players import Player
 
 
 class Game:
@@ -30,6 +32,12 @@ class Game:
         # Use pygame.NOFRAME to remove the window border and fix bug with display when user ALT+TAB (Black screen)
         self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT], pygame.NOFRAME)
 
+        # Load the players and create the teams
+        self.players = Player.create_players()
+        random.shuffle(self.players)
+        self.current_player_index = 0
+        self.__create_teams()
+
         # Load background image and resize it to fit the first half screen
         background_image = pygame.image.load(BOARD_BACKGROUND)
         self.background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT))
@@ -40,11 +48,18 @@ class Game:
         self.music_button_rect = draw_music_button(self.screen, music_on=True)
         self.needs_redraw = False
 
+    def next_player(self):
+        self.current_player_index = (self.current_player_index + 1) % len(self.players)
+
+    def display_current_player(self):
+        current_player = self.players[self.current_player_index]
+        print(f"C'est le tour de {current_player}")
+
     def __create_teams(self):
-        # Create all teams and return them in a list
-        colors = ['green', 'yellow', 'red', 'blue']
         self.teams = []
-        for color in colors:
+
+        for player in self.players:
+            color = player.color.lower()
             team = [Diplomat(color), Chief(color), Assassin(color), Reporter(color)] + \
                    [Militant(color, i) for i in range(4)] + \
                    [Necromobile(color)]
@@ -74,7 +89,6 @@ class Game:
         screen = pygame.display.set_mode([constantes.SCREEN_WIDTH, constantes.SCREEN_HEIGHT], pygame.NOFRAME)
 
         button_volume_on.draw(screen)
-
         running = True
         clock = pygame.time.Clock()
 
@@ -139,16 +153,17 @@ class Game:
                             music.play(-1)
                         else:
                             music.stop()
+
                     # Redraw the screen after a click
                     self.board.redraw()
                     # Board.redraw_screen(screen, board, teams, background_image, wanted_image, music_button_rect)
                     self.needs_redraw = False
 
-            if self.needs_redraw:
-                self.board.redraw()
-                self.needs_redraw = False
+        if self.needs_redraw:
+            self.board.redraw()
+            self.needs_redraw = False
 
-            clock.tick(FPS)
+        clock.tick(FPS)
 
     def __handle_mouse_click(self):
         offset_x = int(constantes.SCREEN_WIDTH * constantes.PADDING)
@@ -158,6 +173,10 @@ class Game:
         adjusted_y = pos[1] - offset_y
         row = adjusted_y // constantes.SQUARE_SIZE
         col = adjusted_x // constantes.SQUARE_SIZE
+        print(f"Clic en position : row={row}, col={col}")  # Afficher la position du clic
+
+        current_player = self.players[self.current_player_index]
+        print(f"Joueur actuel : {current_player.color}")  # Débogage
 
         # Check if the music button is clicked
         # if music_button_rect.collidepoint(pos):
@@ -165,12 +184,13 @@ class Game:
         #     pass
 
         if self.reporter_targeting_mode:
+            print("Reporter targeting mode")
             pass_button_rect = draw_pass_button(self.screen)
 
-            if isinstance(self.selected_pawn, Reporter):
-
+            if isinstance(self.selected_pawn, Reporter) and self.selected_pawn.color == current_player.color.lower():
                 if self.selected_pawn.can_kill((row, col), self.teams):
                     self.selected_pawn.kill_adjacent_pawn((row, col), self.teams)
+                    self.next_player()
                 self.reporter_targeting_mode = False
                 self.just_moved_reporter = False
                 self.board.redraw()
@@ -182,37 +202,39 @@ class Game:
                 self.board.redraw()
                 return
 
-            return
-
         if self.selected_pawn and self.selected_pawn.is_alive:
-            new_position = (col, row)
-            if new_position in self.selected_pawn.get_possible_moves(self.teams):
-                self.selected_pawn.move(new_position, self.teams)
-                just_moved_reporter = isinstance(self.selected_pawn, Reporter)
-                if just_moved_reporter:
-                    draw_possible_targets(self.screen, self.selected_pawn, self.teams, offset_x, offset_y)
-                    draw_pass_button(self.screen)
-                    self.reporter_targeting_mode = True
+            print(f"Couleur du pion sélectionné : {self.selected_pawn.color}")
+            if self.selected_pawn.color == constantes.color[current_player.color]:
+                new_position = (col, row)
+                if new_position in self.selected_pawn.get_possible_moves(self.teams):
+                    self.selected_pawn.move(new_position, self.teams)
+                    just_moved_reporter = isinstance(self.selected_pawn, Reporter)
+                    if just_moved_reporter:
+                        draw_possible_targets(self.screen, self.selected_pawn, self.teams, offset_x, offset_y)
+                        draw_pass_button(self.screen)
+                        self.reporter_targeting_mode = True
+                    else:
+                        self.next_player()
+                    self.selected_square = None
+                    self.selected_pawn = None
                 else:
+                    self.selected_pawn = None
+                    self.selected_square = None
+                    self.just_moved_reporter = False
                     self.reporter_targeting_mode = False
-                self.selected_square = None
-                self.selected_pawn = None
-                self.board.redraw()
-                return
-            else:
-                self.selected_pawn = None
-                self.selected_square = None
-                self.just_moved_reporter = False
-                self.reporter_targeting_mode = False
+                    print("Ce n'est pas le tour de ce joueur")
 
         else:
-
             for team in self.teams:
                 for piece in team:
                     if piece.position == (col, row) and piece.is_alive:
-                        self.selected_pawn = piece
-                        self.selected_square = (row, col)
-                        break
+                        piece_color_rgb = constantes.color[current_player.color]
+                        if piece.color == piece_color_rgb:
+                            self.selected_pawn = piece
+                            self.selected_square = (row, col)
+                            print("Pion sélectionné")
+                            return
+                        else:
+                            print("Pion trouvé, mais pas de la bonne couleur")
 
         self.board.redraw()
-

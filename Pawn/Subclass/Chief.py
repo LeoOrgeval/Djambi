@@ -22,9 +22,6 @@ class Chief(Pawn):
         # Check if the new position is outside the board
         if not (0 <= new_position[0] < 9 and 0 <= new_position[1] < 9):
             return False
-        # Check if the new position is the labyrinth position and the pawn is not a chief
-        if new_position == constantes.LABYRINTH_POSITION and self.type != 'Chief':
-            return False
         # Check if the new position is occupied by an ally
         for team in teams:
             for pawn in team:

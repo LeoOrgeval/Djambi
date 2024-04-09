@@ -237,5 +237,6 @@ class Game:
                             return
                         else:
                             print("Pion trouvé, mais pas de la bonne couleur")
+                            self.display_current_player()
 
         self.board.redraw()

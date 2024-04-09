@@ -72,7 +72,7 @@ def handle_mouse_click(teams, screen, background_image, wanted_image, board):
 
     if selected_pawn and selected_pawn.is_alive:
         new_position = (col, row)
-        if selected_pawn.can_move(new_position, teams):
+        if new_position in selected_pawn.get_possible_moves(teams):
             selected_pawn.move(new_position, teams)
             just_moved_reporter = isinstance(selected_pawn, Reporter)
             if just_moved_reporter:

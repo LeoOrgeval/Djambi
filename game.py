@@ -1,15 +1,7 @@
-import sys
 import Players
 import Board
-import pygame
-from pygame import surface, mixer
 from pygame.mixer import music
-
-from constantes import *
-
-
 from ui import *
-import button
 
 pygame.init()
 

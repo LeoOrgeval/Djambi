@@ -329,7 +329,6 @@ class Game:
                         pygame.quit()
                         exit()
 
-
     def reset_game_state(self):
         # Réinitialiser les variables du jeu
         self.teams = []

@@ -16,6 +16,8 @@ class Pawn:
         self.image = self.get_image_path(color, pawn_type, self.is_alive)
         # Scale the image to fit the square size
         self.scale = (constantes.SQUARE_SIZE * 0.8, constantes.SQUARE_SIZE * 0.8)
+        self.max_range = constantes.ROWS
+
 
     def get_image_path(self, color, pawn_type, is_alive):
         # Make sure the color is a tuple
@@ -53,7 +55,7 @@ class Pawn:
 
     def __get_possible_moves(self, teams, dx, dy):
         moves = []
-        for i in range(1, constantes.ROWS):  # Diag vers le bas dte
+        for i in range(1, self.max_range):  # Diag vers le bas dte
             new_position = (self.position[0] + dx*i, self.position[1] + dy*i)
             if self.__can_move(new_position, teams):
                 moves.append(new_position)
@@ -97,3 +99,6 @@ class Pawn:
         elif direction == "right":
             dx = 1
         return self.position[0] + dy, self.position[1] + dx
+
+    def __repr__(self):
+        return self.__class__.__name__

@@ -9,10 +9,10 @@ from Pawn.Pawn import Pawn
 
 class Chief(Pawn):
     initial_positions = {
-        'red': (3, 4),
-        'yellow': (3, 3),
-        'blue': (4, 4),
-        'green': (4, 3)
+        'red': (0, 0),
+        'yellow': (0, 8),
+        'blue': (8, 8),
+        'green': (8, 0)
     }
 
     def __init__(self, color):

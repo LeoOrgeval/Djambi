@@ -5,6 +5,7 @@ import random
 from pygame.mixer import music
 from pygame import mixer
 
+import constantes
 import ui
 from ui import *
 from Pawn.Subclass.Chief import Chief
@@ -262,5 +263,52 @@ class Game:
                             print("Pion trouvé, mais pas de la bonne couleur")
                             self.display_current_player()
 
+        self.check_for_last_chief_alive()
         self.board.redraw()
 
+    def check_for_last_chief_alive(self):
+        living_chiefs = 0
+        for team in self.teams:
+            for pawn in team:
+                if isinstance(pawn, Chief) and pawn.is_alive:
+                    living_chiefs += 1
+
+        if living_chiefs == 1:
+            self.end_game()
+
+    def end_game(self):
+        print("End game")
+        self.load_win_menu()
+
+    def load_win_menu(self):
+        for team in self.teams:
+            for pawn in team:
+                if isinstance(pawn, Chief) and pawn.is_alive:
+                    color = constantes.COLOR_NAMES.get(pawn.color, 'unknown')
+                    break
+        print(f"{color} wins!")
+
+        win_image_path = f'./assets/win/{color}_win.png'
+        win_image = pygame.image.load(win_image_path)
+        win_image = pygame.transform.scale(win_image, (constantes.SCREEN_WIDTH, constantes.SCREEN_HEIGHT))
+        image_rect = win_image.get_rect(center=(constantes.SCREEN_WIDTH // 2, constantes.SCREEN_HEIGHT // 2))
+
+        text_surface = pygame.font.Font(constantes.MYFONT, 30).render(f'{color.upper()} wins!', False, constantes.color['WHITE'])
+        text_rect = text_surface.get_rect(center=(constantes.SCREEN_WIDTH // 2, 50))
+
+        button_play = button.MiddleButton((200, 50), "Play again")
+        button_quit = button.MiddleButton((200, 50), "Quit", (0, 75))
+
+        self.screen.blit(win_image, image_rect)
+        self.screen.blit(text_surface, text_rect)
+        button_play.draw(self.screen)
+        button_quit.draw(self.screen)
+        pygame.display.flip()
+
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    # close the game
+                    pygame.quit()

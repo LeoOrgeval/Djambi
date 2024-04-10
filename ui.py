@@ -188,7 +188,19 @@ def draw_current_player(screen, current_player):
 def draw_music_button(screen, music_on):
     font = pygame.font.Font(None, 36)
     text = font.render("Music", True, (255, 255, 255))
-    button_rect = text.get_rect(center=(constantes.SCREEN_WIDTH - 50, constantes.SCREEN_HEIGHT - 20))
+    button_rect = text.get_rect()
+    button_rect.right = (constantes.SCREEN_WIDTH - 40)
+    button_rect.bottom = (constantes.SCREEN_HEIGHT - 40)
     pygame.draw.rect(screen, (0, 128, 0), button_rect.inflate(20, 10))
+    screen.blit(text, button_rect)
+    return button_rect
+
+def draw_cross_button(screen):
+    font = pygame.font.Font(None, 36)
+    text = font.render("Menu", True, (255, 255, 255))
+    button_rect = text.get_rect()
+    button_rect.right = (constantes.SCREEN_WIDTH - 40)
+    button_rect.top = 60
+    pygame.draw.rect(screen, (0, 0, 0, 0), button_rect.inflate(20, 10))
     screen.blit(text, button_rect)
     return button_rect

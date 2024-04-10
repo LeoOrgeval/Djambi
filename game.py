@@ -315,5 +315,28 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    # close the game
                     pygame.quit()
+                    exit()
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if button_play.is_clicked(event):
+                        self.reset_game_state()
+                        self.load_main_menu()
+                        running = False
+
+                    if button_quit.is_clicked(event):
+                        running = False
+                        pygame.quit()
+                        exit()
+
+
+    def reset_game_state(self):
+        # Réinitialiser les variables du jeu
+        self.teams = []
+        self.reporter_targeting_mode = False
+        self.selected_square = None
+        self.selected_pawn = None
+        self.just_moved_reporter = False
+        self.current_player_index = 0
+        self.__create_teams()
+

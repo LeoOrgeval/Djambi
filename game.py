@@ -49,9 +49,7 @@ class Game:
         self.board = Board.Board(self)
         self.music_button_rect = draw_music_button(self.screen, music_on=True)
         self.cross_button = draw_cross_button(self.screen)
-        self.music_playing = False
-        self.music_button_color_playing = (0, 128, 0)
-        self.music_button_color_stopped = (128, 0, 0)
+        self.music_playing = True
         self.needs_redraw = False
 
     def next_player(self):

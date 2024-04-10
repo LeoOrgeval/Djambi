@@ -62,7 +62,7 @@ COLOR_NAMES = {
 }
 
 # Game's FPS
-FPS = 20
+FPS = 60
 
 # Images for the board
 

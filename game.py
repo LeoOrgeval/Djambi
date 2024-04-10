@@ -51,8 +51,20 @@ class Game:
         self.needs_redraw = False
 
     def next_player(self):
-        self.current_player_index = (self.current_player_index + 1) % len(self.players)
-        self.display_current_player()
+        next_player_found = False
+        while not next_player_found:
+            self.current_player_index = (self.current_player_index + 1) % len(self.players)
+            current_player = self.players[self.current_player_index]
+
+
+            next_player_found = self.is_chief_alive(current_player.color)
+
+    def is_chief_alive(self, color):
+        color = color.lower()
+        # print(color, self.teams)
+        team = [team for team in self.teams if constantes.COLOR_NAMES[team[0].color] == color][0]
+        chief = [pawn for pawn in team if isinstance(pawn, Chief)][0]
+        return chief.is_alive
 
     def display_current_player(self):
         current_player = self.players[self.current_player_index]
@@ -212,6 +224,13 @@ class Game:
             if self.selected_pawn.color == constantes.color[current_player.color]:
                 new_position = (col, row)
                 if new_position in self.selected_pawn.get_possible_moves(self.teams):
+                    enemy_pawn = self.selected_pawn.find_enemy_pawn(new_position, self.teams)
+                    # if enemy_pawn and isinstance(enemy_pawn, Chief):
+                    #     enemy_pawn.die(self.selected_pawn.color, self.teams)
+
+                    if not self.selected_pawn.is_ally_pawn_at(new_position, self.teams):
+                        self.selected_pawn.move(new_position, self.teams)
+
                     self.selected_pawn.move(new_position, self.teams)
                     just_moved_reporter = isinstance(self.selected_pawn, Reporter)
                     if just_moved_reporter:
@@ -244,3 +263,4 @@ class Game:
                             self.display_current_player()
 
         self.board.redraw()
+

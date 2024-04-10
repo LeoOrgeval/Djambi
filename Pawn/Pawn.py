@@ -87,6 +87,13 @@ class Pawn:
                     return pawn
         return None
 
+    def is_ally_pawn_at(self, position, teams):
+        for team in teams:
+            for pawn in team:
+                if pawn.position == position and pawn.color == self.color and pawn.is_alive:
+                    return True
+        return False
+
     def get_adjacent_position(self, direction):
         """Get adjacent position."""
         dx, dy = 0, 0
@@ -101,4 +108,4 @@ class Pawn:
         return self.position[0] + dy, self.position[1] + dx
 
     def __repr__(self):
-        return self.__class__.__name__
+        return f"{self.__class__.__name__} - {self.color} - {self.position} - {self.is_alive}"

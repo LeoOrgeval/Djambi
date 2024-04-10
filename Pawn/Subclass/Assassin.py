@@ -8,10 +8,10 @@ from Pawn.Pawn import Pawn
 
 class Assassin(Pawn):
     initial_positions = {
-        'red': (1, 0),
-        'yellow': (1, 8),
-        'blue': (7, 8),
-        'green': (7, 0)
+        'red': (5, 5),
+        'yellow': (4, 5),
+        'blue': (5, 4),
+        'green': (6, 5)
     }
 
     def __init__(self, color):

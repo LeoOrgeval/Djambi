@@ -48,6 +48,10 @@ class Game:
         self.__create_teams()
         self.board = Board.Board(self)
         self.music_button_rect = draw_music_button(self.screen, music_on=True)
+        self.cross_button = draw_cross_button(self.screen)
+        self.music_playing = False
+        self.music_button_color_playing = (0, 128, 0)
+        self.music_button_color_stopped = (128, 0, 0)
         self.needs_redraw = False
 
     def next_player(self):
@@ -137,6 +141,7 @@ class Game:
     def game_loop(self):
         music.load('assets/game_song.mp3')
         music.set_volume(0.3)
+        music_playing = self.music_playing
         # -1 means loop indefinitely
         music.play(-1)
 
@@ -157,8 +162,10 @@ class Game:
                             music.play(-1)
                         else:
                             music.stop()
-
-                    # Redraw the screen after a click
+                    elif self.cross_button.collidepoint(event.pos):
+                        self.load_main_menu()
+                        return
+                        # Redraw the screen after a click
                     self.board.redraw()
                     # Board.redraw_screen(screen, board, teams, background_image, wanted_image, music_button_rect)
                     self.needs_redraw = False

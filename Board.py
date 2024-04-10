@@ -62,6 +62,7 @@ class Board:
 
         # Draw music button
         ui.draw_music_button(self.game.screen, music_on=True)
+        ui.draw_cross_button(self.game.screen)
 
         pygame.display.flip()
 

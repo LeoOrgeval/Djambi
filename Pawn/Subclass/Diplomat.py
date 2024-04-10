@@ -10,7 +10,7 @@ from Pawn.Pawn import Pawn
 class Diplomat(Pawn):
     initial_positions = {
         'red': (0, 1),
-        'yellow': (0, 0),
+        'yellow': (0, 7),
         'blue': (8, 7),
         'green': (8, 1)
     }
